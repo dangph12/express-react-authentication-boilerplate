@@ -1,7 +1,9 @@
 import express, { Router } from 'express';
-import asyncHandler from '~/utils/async-handler';
-import UserController from './user-controller';
+
 import validate from '~/middleware/validate';
+import asyncHandler from '~/utils/async-handler';
+
+import UserController from './user-controller';
 import UserValidationSchema from './user-validation';
 
 const router: Router = express.Router();

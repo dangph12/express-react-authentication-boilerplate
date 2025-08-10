@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+
 import { IAuth } from './auth-type';
 
 // One user can have multiple auth accounts
@@ -8,7 +9,8 @@ const AuthSchema = new Schema<IAuth>(
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     provider: { type: String, required: true },
     providerId: { type: String, required: true },
-    localPassword: { type: String }
+    localPassword: { type: String },
+    verifyAt: { type: Date, default: null }
   },
   { timestamps: true }
 );

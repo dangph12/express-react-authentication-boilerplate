@@ -1,5 +1,6 @@
-import UserModel from './user-model';
 import createHttpError from 'http-errors';
+
+import UserModel from './user-model';
 
 const UserService = {
   find: async ({

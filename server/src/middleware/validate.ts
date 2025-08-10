@@ -1,6 +1,6 @@
-import { z, ZodType } from 'zod';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction,Request, Response } from 'express';
 import createHttpError from 'http-errors';
+import { z, ZodType } from 'zod';
 
 /**
  * Generic middleware to validate request body fields using Zod.

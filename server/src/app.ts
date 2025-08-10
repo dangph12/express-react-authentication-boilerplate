@@ -1,14 +1,15 @@
-import express, { Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
-import logger from 'morgan';
-import dotenv from 'dotenv';
 import cors from 'cors';
-import connectDB from './configs/db';
-import router from './routes/router';
+import dotenv from 'dotenv';
+import express, { Request, Response } from 'express';
+import logger from 'morgan';
 import passport from 'passport';
-import configurePassport from './utils/passport';
-import ApiResponse from './types/api-response';
+
+import connectDB from './configs/db';
 import errorHandler from './middleware/error-handler';
+import router from './routes/router';
+import ApiResponse from './types/api-response';
+import configurePassport from './utils/passport';
 
 dotenv.config();
 

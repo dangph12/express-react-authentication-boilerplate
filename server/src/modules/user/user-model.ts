@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+
 import { IUser } from './user-type';
 
 const UserSchema = new Schema<IUser>(
@@ -8,7 +9,6 @@ const UserSchema = new Schema<IUser>(
     avatar: { type: String, default: '' },
     gender: { type: String },
     role: { type: String, required: true, enum: ['user', 'admin'] },
-    providers: [{ type: String, required: true }],
     isActive: { type: Boolean, default: true }
   },
   { timestamps: true }

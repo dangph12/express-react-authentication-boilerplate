@@ -1,6 +1,8 @@
-import userService from './user-service';
 import { Request, Response } from 'express';
+
 import ApiResponse from '~/types/api-response';
+
+import userService from './user-service';
 
 const UserController = {
   find: async (req: Request, res: Response) => {

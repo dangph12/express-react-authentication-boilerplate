@@ -1,5 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction,Request, Response } from 'express';
 import createHttpError from 'http-errors';
+
 import { IUser } from '~/modules/user/user-type';
 
 const authorize =

@@ -1,6 +1,6 @@
-import { Request, Response, NextFunction } from 'express';
-import passport from 'passport';
+import { NextFunction,Request, Response } from 'express';
 import createHttpError from 'http-errors';
+import passport from 'passport';
 
 const authenticate = () => {
   return (req: Request, res: Response, next: NextFunction) => {

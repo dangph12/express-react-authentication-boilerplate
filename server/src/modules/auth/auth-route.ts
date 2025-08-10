@@ -1,8 +1,10 @@
 import express, { Router } from 'express';
-import asyncHandler from '~/utils/async-handler';
-import AuthController from './auth-controller';
-import validate from '~/middleware/validate';
 import passport from 'passport';
+
+import validate from '~/middleware/validate';
+import asyncHandler from '~/utils/async-handler';
+
+import AuthController from './auth-controller';
 import { LocalLogin, LocalRegister } from './auth-validation';
 
 const router: Router = express.Router();

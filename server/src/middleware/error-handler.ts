@@ -1,6 +1,7 @@
-import { Request, Response, ErrorRequestHandler } from 'express';
-import ApiResponse from '~/types/api-response';
+import { ErrorRequestHandler,Request, Response } from 'express';
 import isHttpError from 'http-errors';
+
+import ApiResponse from '~/types/api-response';
 
 const errorHandler: ErrorRequestHandler = (
   err: isHttpError.HttpError | Error,

@@ -1,5 +1,6 @@
-import app from './app';
 import dotenv from 'dotenv';
+
+import app from './app';
 dotenv.config();
 
 const { SERVER_URL } = process.env;
@@ -23,10 +24,6 @@ const onError = (error: NodeJS.ErrnoException): void => {
   }
 };
 
-const onListening = (): void => {
-  console.log(`Listening on ${SERVER_URL}`);
-};
-
 const url = new URL(SERVER_URL ?? 'http://localhost:8000');
 const port = Number(url.port) || 8000;
 
@@ -35,4 +32,3 @@ const server = app.listen(port, () => {
 });
 
 server.on('error', onError);
-server.on('listening', onListening);

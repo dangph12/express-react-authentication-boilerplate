@@ -4,6 +4,5 @@ export interface IUser {
   avatar: string;
   gender?: string;
   role: 'user' | 'admin';
-  providers: string[];
   isActive?: boolean;
 }

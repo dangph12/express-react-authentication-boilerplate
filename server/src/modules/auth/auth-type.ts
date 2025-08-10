@@ -5,4 +5,5 @@ export interface IAuth {
   provider: string;
   providerId: string;
   localPassword?: string;
+  verifyAt?: Date;
 }
