@@ -1,4 +1,4 @@
-import { ErrorRequestHandler,Request, Response } from 'express';
+import { ErrorRequestHandler, Request, Response } from 'express';
 import isHttpError from 'http-errors';
 
 import ApiResponse from '~/types/api-response';

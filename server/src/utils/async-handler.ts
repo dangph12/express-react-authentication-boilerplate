@@ -1,4 +1,4 @@
-import { NextFunction,Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 /**
  * @description Async handler to catch errors in async routes

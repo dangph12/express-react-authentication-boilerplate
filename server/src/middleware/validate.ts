@@ -1,4 +1,4 @@
-import { NextFunction,Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 import { z, ZodType } from 'zod';
 
