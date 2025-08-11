@@ -10,17 +10,14 @@ export default tseslint.config(
     ignores: ['**/node_modules/', '**/dist/', '**/build/']
   },
   {
-    files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}'],
+    files: ['server/**/*.{js,ts}'],
     plugins: {
       'simple-import-sort': simpleImportSort
     },
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: {
-        ...globals.node,
-        ...globals.browser
-      }
+      sourceType: 'commonjs',
+      globals: globals.node
     },
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
@@ -29,22 +26,18 @@ export default tseslint.config(
       '@typescript-eslint/no-inferrable-types': 'off',
       'no-console': 'off',
       'no-empty-function': 'off',
-      'react-hooks/exhaustive-deps': 'off',
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error'
     }
   },
   {
-    files: ['server/**/*.{js,ts}'],
-    languageOptions: {
-      sourceType: 'commonjs',
-      globals: globals.node
-    }
-  },
-  {
     files: ['client/**/*.{js,jsx,ts,tsx}'],
+    plugins: {
+      'simple-import-sort': simpleImportSort
+    },
     extends: [
       js.configs.recommended,
+      ...tseslint.configs.recommended,
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite
     ],
@@ -56,6 +49,18 @@ export default tseslint.config(
         ecmaFeatures: { jsx: true },
         sourceType: 'module'
       }
+    },
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-inferrable-types': 'off',
+      'no-console': 'off',
+      'no-empty-function': 'off',
+      'react-hooks/exhaustive-deps': 'off',
+      'react-refresh/only-export-components': 'off',
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error'
     }
   }
 );
