@@ -2,8 +2,8 @@
   "name": "express-react-typescript-boilerplate",
   "version": "1.0.0",
   "scripts": {
-    "lint": "eslint . --ext .ts,.tsx,.js,.mjs",
-    "lint:fix": "eslint . --ext .ts,.tsx,.js,.mjs --fix",
+    "lint": "eslint . --ext .js,.jsx,.mjs,.cjs,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.mjs,.cjs,.ts,.tsx --fix",
     "format": "prettier --write .",
     "prepare": "husky",
     "lint-staged": "lint-staged"
@@ -11,8 +11,7 @@
   "lint-staged": {
     "*.{js,jsx,mjs,cjs,ts,tsx}": [
       "npm run lint:fix",
-      "npm run format",
-      "git add"
+      "npm run format"
     ]
   },
   "keywords": [],
