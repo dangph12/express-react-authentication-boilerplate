@@ -38,6 +38,15 @@ const UserService = {
 
     return users;
   },
+  findById: async (userId: string) => {
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      throw createHttpError(404, 'User not found');
+    }
+
+    return user;
+  },
   findByEmail: async (email: string) => {
     const user = await UserModel.findOne({
       email: email
@@ -65,6 +74,21 @@ const UserService = {
     }
 
     return newUser;
+  },
+  update: async (userId: string, updateData: Partial<IUser>) => {
+    const updatedUser = await UserModel.findByIdAndUpdate(userId, updateData, {
+      new: true,
+      runValidators: true
+    });
+
+    if (!updatedUser) {
+      throw createHttpError(404, 'User not found');
+    }
+
+    return updatedUser;
+  },
+  remove: async (userId: string) => {
+    await UserModel.findByIdAndDelete(userId);
   }
 };
 

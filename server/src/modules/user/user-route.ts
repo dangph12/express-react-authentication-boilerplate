@@ -11,21 +11,21 @@ const router: Router = express.Router();
 // In list method, you can implement pagination, sorting, and filtering logic
 router.get('/', asyncHandler(UserController.find));
 
-// router.post(
-//   '/',
-//   validate(userValidationSchema.shape),
-//   asyncHandler(UserController.create)
-// );
+router.post(
+  '/',
+  validate(UserValidationSchema.shape),
+  asyncHandler(UserController.create)
+);
 
-// router.get('/:id', asyncHandler(UserController.findById));
+router.get('/:id', asyncHandler(UserController.findById));
 
-// // For update, because some fields are optional, we use partial validation
-// router.patch(
-//   '/:id',
-//   validate(userValidationSchema.partial().shape),
-//   asyncHandler(UserController.update)
-// );
+// For update, because some fields are optional, we use partial validation
+router.patch(
+  '/:id',
+  validate(UserValidationSchema.partial().shape),
+  asyncHandler(UserController.update)
+);
 
-// router.delete('/:id', asyncHandler(UserController.remove));
+router.delete('/:id', asyncHandler(UserController.remove));
 
 export default router;
