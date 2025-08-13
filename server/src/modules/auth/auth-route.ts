@@ -35,10 +35,9 @@ router.get(
   asyncHandler(AuthController.loginByGoogle)
 );
 
-// TODO: Get email from facebook profile
 router.get(
   '/facebook',
-  passport.authenticate('facebook', { scope: ['public_profile'] })
+  passport.authenticate('facebook', { scope: ['email', 'public_profile'] })
 );
 
 router.get(
