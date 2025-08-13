@@ -3,12 +3,12 @@ import { Document } from 'mongoose';
 
 import AuthModel from '~/modules/auth/auth-model';
 import { comparePassword, hashPassword } from '~/utils/bcrypt';
+import { sendMail } from '~/utils/email/mailer';
 import {
   generateResetPasswordToken,
   generateToken,
   verifyToken
 } from '~/utils/jwt';
-import { sendMail } from '~/utils/mailer';
 
 import UserService from '../user/user-service';
 import { IUser } from '../user/user-type';
@@ -68,9 +68,13 @@ const AuthService = {
     const resetToken = generateResetPasswordToken(user._id.toString());
 
     await sendMail({
-      to: email,
+      to: user.email,
       subject: 'Password Reset',
-      text: `Click the link to reset your password: ${process.env.CLIENT_URL}/reset-password?token=${resetToken}`
+      template: 'password-reset',
+      templateData: {
+        name: user.name,
+        resetUrl: `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`
+      }
     });
   },
   resetPassword: async (token: string, newPassword: string) => {
