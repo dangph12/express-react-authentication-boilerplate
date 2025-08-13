@@ -1,7 +1,10 @@
 import { Request, Response } from 'express';
+import { Document } from 'mongoose';
 
 import ApiResponse from '~/types/api-response';
+import { generateToken } from '~/utils/jwt';
 
+import { IUser } from '../user/user-type';
 import AuthService from './auth-service';
 
 const AuthController = {
@@ -87,19 +90,17 @@ const AuthController = {
 
     return res.status(200).json({ message: 'User logged out successfully' });
   },
-  // TODO: Implement login with provider
   loginWithProvider: async (req: Request, res: Response) => {
-    const user = req.user;
-    if (!user) {
-      return res.redirect(
-        `${process.env.CLIENT_URL}/auth/callback?error=User not found`
-      );
+    // This user is from create method, so it has type Document
+    const user = req.user as Document<unknown, object, IUser> & IUser;
+    if (!user || !user._id) {
+      return res.status(400).json(ApiResponse.error('User not found'));
     }
-    const { accessToken, refreshToken } = await AuthService.loginWithProvider(
-      'facebook',
-      user.id,
-      user
-    );
+
+    const { accessToken, refreshToken } = generateToken({
+      id: user._id.toString(),
+      role: user.role
+    });
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
