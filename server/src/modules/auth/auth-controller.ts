@@ -62,7 +62,7 @@ const AuthController = {
     const { token } = req.query;
 
     if (typeof token !== 'string') {
-      return res.status(400).json(ApiResponse.error('Invalid reset token'));
+      return res.status(400).json(ApiResponse.failed('Invalid reset token'));
     }
 
     await AuthService.resetPassword(token, password);
@@ -94,7 +94,7 @@ const AuthController = {
     // This user is from create method, so it has type Document
     const user = req.user as Document<unknown, object, IUser> & IUser;
     if (!user || !user._id) {
-      return res.status(400).json(ApiResponse.error('User not found'));
+      return res.status(400).json(ApiResponse.failed('User not found'));
     }
 
     const { accessToken, refreshToken } = generateToken({
