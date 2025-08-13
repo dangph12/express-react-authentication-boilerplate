@@ -1,6 +1,7 @@
 import createHttpError from 'http-errors';
 
 import UserModel from './user-model';
+import { IUser } from './user-type';
 
 const UserService = {
   find: async ({
@@ -36,6 +37,34 @@ const UserService = {
     }
 
     return users;
+  },
+  findByEmail: async (email: string) => {
+    const user = await UserModel.findOne({
+      email: email
+    });
+
+    if (!user) {
+      throw createHttpError(404, 'User not found');
+    }
+
+    return user;
+  },
+  create: async (userData: IUser) => {
+    const existingUser = await UserModel.findOne({ email: userData.email });
+    if (existingUser) {
+      throw createHttpError(400, 'User with this email already exists');
+    }
+
+    const newUser = UserModel.create({
+      ...userData,
+      isActive: true
+    });
+
+    if (!newUser) {
+      throw createHttpError(500, 'Failed to create user');
+    }
+
+    return newUser;
   }
 };
 

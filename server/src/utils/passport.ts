@@ -3,8 +3,9 @@ import { Strategy as FacebookStrategy } from 'passport-facebook';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 
-import AuthModel from '~/modules/auth/auth-model';
+import AuthService from '~/modules/auth/auth-service';
 import UserModel from '~/modules/user/user-model';
+import UserService from '~/modules/user/user-service';
 
 const configurePassport = () => {
   if (process.env.JWT_SECRET) {
@@ -49,32 +50,20 @@ const configurePassport = () => {
         },
         async (accessToken, refreshToken, profile, done) => {
           try {
-            let user = null;
-            const email = profile.emails?.[0]?.value;
-            if (email) {
-              user = await UserModel.findOne({ email });
-            }
+            let user = await UserService.findByEmail(
+              profile.emails?.[0]?.value || ''
+            );
+
             if (!user) {
-              user = await UserModel.create({
-                email: email || '',
-                name: profile.displayName,
+              user = await UserService.create({
+                email: profile.emails?.[0]?.value || '',
+                name: profile.displayName || '',
                 avatar: profile.photos?.[0]?.value || '',
                 role: 'user'
               });
             }
 
-            let auth = await AuthModel.findOne({
-              provider: 'facebook',
-              providerId: profile.id
-            });
-            if (!auth) {
-              auth = await AuthModel.create({
-                user: user._id,
-                provider: 'facebook',
-                providerId: profile.id,
-                verifyAt: new Date()
-              });
-            }
+            await AuthService.loginWithProvider('facebook', profile.id, user);
 
             return done(null, user);
           } catch (error) {
@@ -95,33 +84,20 @@ const configurePassport = () => {
         },
         async (accessToken, refreshToken, profile, done) => {
           try {
-            // Find or create user by email
-            let user = null;
-            const email = profile.emails?.[0]?.value;
-            if (email) {
-              user = await UserModel.findOne({ email });
-            }
+            let user = await UserService.findByEmail(
+              profile.emails?.[0]?.value || ''
+            );
+
             if (!user) {
-              user = await UserModel.create({
-                email: email || '',
-                name: profile.displayName,
+              user = await UserService.create({
+                email: profile.emails?.[0]?.value || '',
+                name: profile.displayName || '',
                 avatar: profile.photos?.[0]?.value || '',
                 role: 'user'
               });
             }
 
-            let auth = await AuthModel.findOne({
-              provider: 'google',
-              providerId: profile.id
-            });
-            if (!auth) {
-              auth = await AuthModel.create({
-                user: user._id,
-                provider: 'google',
-                providerId: profile.id,
-                verifyAt: new Date()
-              });
-            }
+            await AuthService.loginWithProvider('google', profile.id, user);
 
             return done(null, user);
           } catch (error) {
