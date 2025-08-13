@@ -24,12 +24,22 @@ export const generateToken = ({
   return { accessToken, refreshToken };
 };
 
-export const verifyRefreshToken = (token: string): string | jwt.JwtPayload => {
+export const generateResetPasswordToken = (id: string | number): string => {
+  return jwt.sign(
+    { id },
+    process.env.JWT_RESET_PASSWORD_SECRET || 'your_jwt_secret',
+    {
+      expiresIn: '1h'
+    }
+  );
+};
+
+export const verifyToken = (
+  token: string,
+  secret: string
+): string | jwt.JwtPayload => {
   try {
-    return jwt.verify(
-      token,
-      process.env.JWT_REFRESH_SECRET || 'your_jwt_secret'
-    );
+    return jwt.verify(token, secret || 'your_jwt_secret');
   } catch (error: unknown) {
     throw new Error(error instanceof Error ? error.message : 'Invalid token');
   }
