@@ -74,7 +74,7 @@ const AuthService = {
       template: 'password-reset',
       templateData: {
         name: user.name,
-        resetUrl: `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`
+        resetUrl: `${process.env.CLIENT_URL}/auth/reset-password?token=${resetToken}`
       }
     });
   },
