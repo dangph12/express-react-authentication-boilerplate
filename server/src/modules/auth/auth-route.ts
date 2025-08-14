@@ -15,9 +15,9 @@ import {
 const router: Router = express.Router();
 
 router.post(
-  '/register',
+  '/sign-up',
   validate(LocalRegister.shape),
-  asyncHandler(AuthController.register)
+  asyncHandler(AuthController.signUp)
 );
 
 router.post(

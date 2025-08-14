@@ -28,10 +28,10 @@ const AuthController = {
       })
     );
   },
-  register: async (req: Request, res: Response) => {
+  signUp: async (req: Request, res: Response) => {
     const { userData, password, confirmPassword } = req.body;
 
-    const { user, accessToken, refreshToken } = await AuthService.register(
+    const { user, accessToken, refreshToken } = await AuthService.signUp(
       userData,
       password
     );

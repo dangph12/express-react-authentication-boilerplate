@@ -40,7 +40,7 @@ const AuthService = {
       refreshToken
     };
   },
-  register: async (userData: IUser, password: string) => {
+  signUp: async (userData: IUser, password: string) => {
     const user = await UserService.create(userData);
 
     const hashedPassword = await hashPassword(password);
