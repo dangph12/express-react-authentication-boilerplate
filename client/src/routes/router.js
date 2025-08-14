@@ -2,6 +2,7 @@ import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router';
 
 const RootLayout = lazy(() => import('~/layouts/RootLayout'));
+const AuthLayout = lazy(() => import('~/layouts/AuthLayout'));
 
 const router = createBrowserRouter([
   {
@@ -19,8 +20,18 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: '/auth/login',
-    Component: lazy(() => import('~/app/auth/login/page'))
+    path: '/auth/',
+    Component: AuthLayout,
+    children: [
+      {
+        path: 'login',
+        Component: lazy(() => import('~/app/auth/login/page'))
+      },
+      {
+        path: 'sign-up',
+        Component: lazy(() => import('~/app/auth/sign-up/page'))
+      }
+    ]
   }
 ]);
 
