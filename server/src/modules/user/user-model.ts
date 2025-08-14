@@ -8,7 +8,12 @@ const UserSchema = new Schema<IUser>(
     name: { type: String, required: true },
     avatar: { type: String, default: '' },
     gender: { type: String },
-    role: { type: String, required: true, enum: ['user', 'admin'] },
+    role: {
+      type: String,
+      required: true,
+      enum: ['user', 'admin'],
+      default: 'user'
+    },
     isActive: { type: Boolean, default: true }
   },
   { timestamps: true }
