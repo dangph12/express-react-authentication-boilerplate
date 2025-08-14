@@ -23,13 +23,12 @@ const AuthController = {
 
     return res.status(200).json(
       ApiResponse.success('User logged in successfully', {
-        user,
         accessToken
       })
     );
   },
   signUp: async (req: Request, res: Response) => {
-    const { userData, password, confirmPassword } = req.body;
+    const { password, confirmPassword, ...userData } = req.body;
 
     const { user, accessToken, refreshToken } = await AuthService.signUp(
       userData,
