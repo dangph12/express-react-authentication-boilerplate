@@ -5,7 +5,7 @@ export const LocalLogin = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters long')
 });
 
-export const LocalRegister = z
+export const LocalSignUp = z
   .object({
     email: z.email(),
     name: z.string().min(1, 'Name is required'),

@@ -8,7 +8,7 @@ import AuthController from './auth-controller';
 import {
   ForgotPassword,
   LocalLogin,
-  LocalRegister,
+  LocalSignUp,
   ResetPassword
 } from './auth-validation';
 
@@ -16,7 +16,7 @@ const router: Router = express.Router();
 
 router.post(
   '/sign-up',
-  validate(LocalRegister.shape),
+  validate(LocalSignUp.shape),
   asyncHandler(AuthController.signUp)
 );
 

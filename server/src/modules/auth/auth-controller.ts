@@ -42,8 +42,7 @@ const AuthController = {
     });
 
     return res.status(201).json(
-      ApiResponse.success('User registered successfully', {
-        user,
+      ApiResponse.success('User signed up successfully', {
         accessToken
       })
     );
