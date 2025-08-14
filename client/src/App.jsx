@@ -1,57 +1,17 @@
-import React from 'react';
-import { toast } from 'sonner';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { RouterProvider } from 'react-router';
 
-import { Button } from './components/ui/button';
-import { Toaster } from './components/ui/sonner';
-
-const SonnerDemo = () => {
-  return (
-    <>
-      <Button
-        variant='outline'
-        onClick={() => {
-          toast('Event has been created!', {
-            description: 'Your event has been successfully created.',
-            action: {
-              label: 'Undo',
-              onClick: () => {
-                console.log('Undo');
-              }
-            }
-          });
-        }}
-      >
-        Show Toast
-      </Button>
-    </>
-  );
-};
+import router from '~/routes/router';
 
 const App = () => {
-  const [theme, setTheme] = React.useState(() =>
-    document.documentElement.classList.contains('dark') ? 'dark' : ''
-  );
+  const theme = useSelector(state => state.theme.value);
 
-  React.useEffect(() => {
-    document.documentElement.classList.toggle('dark', theme === 'dark');
+  useEffect(() => {
+    document.documentElement.setAttribute('class', theme);
   }, [theme]);
 
-  return (
-    <>
-      <main>
-        <Button
-          variant='outline'
-          onClick={() => {
-            setTheme(theme => (theme === 'dark' ? 'light' : 'dark'));
-          }}
-        >
-          Toggle theme
-        </Button>
-        <SonnerDemo setTheme={setTheme} />
-      </main>
-      <Toaster position='top-center' theme={theme} />
-    </>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;
