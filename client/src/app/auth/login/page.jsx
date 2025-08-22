@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { FaFacebook, FaGoogle } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router';
 import { toast } from 'sonner';
@@ -44,14 +45,12 @@ const Login = () => {
   const onSubmit = async data => {
     try {
       const { isRemember, ...loginData } = data;
-      console.log('Login data:', loginData);
       const response = await axiosInstance.post('/api/auth/login', loginData);
       const { accessToken } = response.data.data;
       dispatch(loadUser({ accessToken, isRemember }));
       navigate('/');
       toast.success('Login successful!');
     } catch (error) {
-      console.error('Login error:', error);
       toast.error('Login failed.');
     }
   };
@@ -61,13 +60,45 @@ const Login = () => {
       <Card className='w-full max-w-md'>
         <CardHeader>
           <CardTitle>Login</CardTitle>
-          <CardDescription>
-            Enter your credentials to access your account
-          </CardDescription>
+          <CardDescription>Please login to continue</CardDescription>
         </CardHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent className='space-y-4'>
+
+        <CardContent className='space-y-4'>
+          <Button
+            variant='outline'
+            className='w-full'
+            onClick={() => {
+              window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`;
+            }}
+          >
+            <FaGoogle className='mr-2' />
+            Continue with Google
+          </Button>
+
+          <Button
+            variant='outline'
+            className='w-full'
+            onClick={() => {
+              window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/facebook`;
+            }}
+          >
+            <FaFacebook className='mr-2' />
+            Continue with Facebook
+          </Button>
+
+          <div className='relative'>
+            <div className='absolute inset-0 flex items-center'>
+              <span className='w-full border-t' />
+            </div>
+            <div className='relative flex justify-center text-xs uppercase'>
+              <span className='bg-background px-2 text-muted-foreground'>
+                Or continue with email
+              </span>
+            </div>
+          </div>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
               <FormField
                 control={form.control}
                 name='email'
@@ -115,28 +146,29 @@ const Login = () => {
                   </FormItem>
                 )}
               />
-            </CardContent>
-            <CardFooter className='flex flex-col space-y-4 pt-6'>
+
               <Button
-                variant='outline'
                 type='submit'
                 className='w-full'
                 disabled={form.formState.isSubmitting}
               >
                 {form.formState.isSubmitting ? 'Signing in...' : 'Sign in'}
               </Button>
-              <p className='text-sm text-muted-foreground text-center'>
-                Don't have an account?{' '}
-                <Link
-                  to='/auth/sign-up'
-                  className='text-primary underline hover:text-primary/80'
-                >
-                  Sign up
-                </Link>
-              </p>
-            </CardFooter>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </CardContent>
+
+        <CardFooter className='pt-6'>
+          <p className='text-sm text-muted-foreground text-center w-full'>
+            Don't have an account?{' '}
+            <Link
+              to='/auth/sign-up'
+              className='text-primary underline hover:text-primary/80'
+            >
+              Sign up
+            </Link>
+          </p>
+        </CardFooter>
       </Card>
     </div>
   );

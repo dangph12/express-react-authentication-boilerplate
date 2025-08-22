@@ -30,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: 'sign-up',
         Component: lazy(() => import('~/app/auth/sign-up/page'))
+      },
+      {
+        path: 'callback',
+        Component: lazy(() => import('~/app/auth/callback/page'))
       }
     ]
   }
