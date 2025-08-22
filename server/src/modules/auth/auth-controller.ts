@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 import ApiResponse from '~/types/api-response';
 import { generateToken } from '~/utils/jwt';
 
-import { IUser } from '../user/user-type';
+import { IUser } from '../users/user-type';
 import AuthService from './auth-service';
 
 const AuthController = {

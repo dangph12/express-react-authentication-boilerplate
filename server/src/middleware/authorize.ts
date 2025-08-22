@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import createHttpError from 'http-errors';
 
-import { IUser } from '~/modules/user/user-type';
+import { IUser } from '~/modules/users/user-type';
 
 const authorize =
   (allowedRoles: string[]) =>

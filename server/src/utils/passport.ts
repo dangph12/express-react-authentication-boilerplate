@@ -4,8 +4,8 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 
 import AuthService from '~/modules/auth/auth-service';
-import UserModel from '~/modules/user/user-model';
-import UserService from '~/modules/user/user-service';
+import UserModel from '~/modules/users/user-model';
+import UserService from '~/modules/users/user-service';
 
 const configurePassport = () => {
   if (process.env.JWT_SECRET) {

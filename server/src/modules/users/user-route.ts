@@ -1,5 +1,6 @@
 import express, { Router } from 'express';
 
+import authenticate from '~/middleware/authenticate';
 import validate from '~/middleware/validate';
 import asyncHandler from '~/utils/async-handler';
 
@@ -17,7 +18,7 @@ router.post(
   asyncHandler(UserController.create)
 );
 
-router.get('/:id', asyncHandler(UserController.findById));
+router.get('/:id', authenticate(), asyncHandler(UserController.findById));
 
 // For update, because some fields are optional, we use partial validation
 router.patch(

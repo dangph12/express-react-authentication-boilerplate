@@ -10,8 +10,8 @@ import {
   verifyToken
 } from '~/utils/jwt';
 
-import UserService from '../user/user-service';
-import { IUser } from '../user/user-type';
+import UserService from '../users/user-service';
+import { IUser } from '../users/user-type';
 
 const AuthService = {
   login: async (email: string, password: string) => {
