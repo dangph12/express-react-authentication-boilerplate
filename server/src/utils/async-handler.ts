@@ -14,7 +14,9 @@ export const asyncHandler =
     ) => Promise<unknown> | unknown
   ) =>
   (req: Request, res: Response, next: NextFunction) => {
-    Promise.resolve(fn(req, res, next)).catch(next);
+    Promise.resolve(fn(req, res, next)).catch(error => {
+      next(error);
+    });
   };
 
 export default asyncHandler;

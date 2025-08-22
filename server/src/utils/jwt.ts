@@ -1,3 +1,4 @@
+import createHttpError from 'http-errors';
 import jwt from 'jsonwebtoken';
 
 export const generateToken = ({
@@ -41,6 +42,9 @@ export const verifyToken = (
   try {
     return jwt.verify(token, secret || 'your_jwt_secret');
   } catch (error: unknown) {
+    if (error instanceof jwt.TokenExpiredError) {
+      throw createHttpError(401, 'Token expired');
+    }
     throw new Error(error instanceof Error ? error.message : 'Invalid token');
   }
 };

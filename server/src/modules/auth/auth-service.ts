@@ -123,7 +123,7 @@ const AuthService = {
 
     // If the decoded token is a string, it means the token is invalid
     if (typeof decoded === 'string') {
-      throw createHttpError(400, 'Invalid refresh password token');
+      throw createHttpError(400, 'Invalid refresh token');
     }
 
     const user = await UserService.findById(decoded.id);
