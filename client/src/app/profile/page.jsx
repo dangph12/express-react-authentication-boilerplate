@@ -1,20 +1,21 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Input } from '~/components/ui/input';
 import { Spinner } from '~/components/ui/spinner';
 import axiosInstance from '~/lib/axiosInstance';
-import { avatarSchema } from '~/validations/avatar';
+import { avatarSchema } from '~/lib/validations/avatar';
+import { setAvatar, updateAvatar } from '~/store/features/avatarSlice';
 
 const Page = () => {
   const { user, loading } = useSelector(state => state.auth);
+  const { url: avatarUrl, uploading } = useSelector(state => state.avatar);
+  const dispatch = useDispatch();
   const [userData, setUserData] = useState(null);
-  const [avatar, setAvatar] = useState(null);
   const [fetchingData, setFetchingData] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
   const {
@@ -35,7 +36,7 @@ const Page = () => {
         try {
           const response = await axiosInstance.get(`/api/users/${user.id}`);
           setUserData(response.data.data);
-          setAvatar(response.data.data.avatar);
+          dispatch(setAvatar(response.data.data.avatar));
         } catch (error) {
           console.error('Error fetching user data:', error);
         } finally {
@@ -45,7 +46,7 @@ const Page = () => {
 
       fetchUserData();
     }
-  }, [user?.id, loading]);
+  }, [user?.id, loading, dispatch]);
 
   useEffect(() => {
     if (watchedAvatar && watchedAvatar[0]) {
@@ -55,28 +56,7 @@ const Page = () => {
 
   const onSubmit = async data => {
     if (!data.avatar || !data.avatar[0]) return;
-
-    setUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append('avatar', data.avatar[0]);
-
-      const response = await axiosInstance.patch(
-        `/api/users/${user.id}/avatar`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-
-      setAvatar(response.data.data.avatar);
-    } catch (error) {
-      console.error('Error updating avatar:', error);
-    } finally {
-      setUploading(false);
-    }
+    dispatch(updateAvatar({ userId: user.id, file: data.avatar[0] }));
   };
 
   const { ref, ...registerProps } = register('avatar');
@@ -107,23 +87,34 @@ const Page = () => {
       <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
         <div className='flex flex-col items-center space-y-4'>
           <div
-            className='w-32 h-32 cursor-pointer hover:opacity-60 transition-opacity'
-            onClick={handleAvatarClick}
+            className={`w-32 h-32 cursor-pointer transition-all duration-200 relative ${
+              uploading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-60'
+            }`}
+            onClick={!uploading ? handleAvatarClick : undefined}
           >
             <Avatar className='w-full h-full'>
               <AvatarImage
                 src={
                   watchedAvatar && watchedAvatar[0]
                     ? URL.createObjectURL(watchedAvatar[0])
-                    : avatar
+                    : avatarUrl
                 }
                 alt={userData?.name}
                 className='pointer-events-none'
               />
               <AvatarFallback className='pointer-events-none'>
-                {uploading ? <Spinner size='sm' /> : 'CN'}
+                CN
               </AvatarFallback>
             </Avatar>
+
+            {/* Uploading overlay with spinner */}
+            {uploading && (
+              <div className='absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full'>
+                <div className='flex flex-col items-center gap-2'>
+                  <Spinner size='lg' className='text-white' />
+                </div>
+              </div>
+            )}
           </div>
 
           <Input
@@ -136,6 +127,7 @@ const Page = () => {
             type='file'
             accept='image/*'
             className='hidden'
+            disabled={uploading}
           />
 
           {errors.avatar && (
