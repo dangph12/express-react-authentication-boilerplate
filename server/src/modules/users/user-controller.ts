@@ -46,6 +46,13 @@ const UserController = {
     return res
       .status(204)
       .json(ApiResponse.success('User deleted successfully', null));
+  },
+  updateAvatar: async (req: Request, res: Response) => {
+    const userId = req.params.id;
+    const avatar = await UserService.updateAvatar(userId, req.file);
+    return res
+      .status(200)
+      .json(ApiResponse.success('Avatar updated successfully', { avatar }));
   }
 };
 

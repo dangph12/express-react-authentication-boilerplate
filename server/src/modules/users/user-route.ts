@@ -3,6 +3,7 @@ import express, { Router } from 'express';
 import authenticate from '~/middleware/authenticate';
 import validate from '~/middleware/validate';
 import asyncHandler from '~/utils/async-handler';
+import { uploadSingle } from '~/utils/multer';
 
 import UserController from './user-controller';
 import UserValidationSchema from './user-validation';
@@ -28,5 +29,11 @@ router.patch(
 );
 
 router.delete('/:id', asyncHandler(UserController.remove));
+
+router.patch(
+  '/:id/avatar',
+  uploadSingle('avatar'),
+  asyncHandler(UserController.updateAvatar)
+);
 
 export default router;

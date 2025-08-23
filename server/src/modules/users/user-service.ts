@@ -1,5 +1,7 @@
 import createHttpError from 'http-errors';
 
+import { deleteAvatar, uploadAvatar } from '~/utils/cloudinary';
+
 import UserModel from './user-model';
 import { IUser } from './user-type';
 
@@ -88,7 +90,51 @@ const UserService = {
     return updatedUser;
   },
   remove: async (userId: string) => {
-    await UserModel.findByIdAndDelete(userId);
+    const user = await UserModel.findById(userId);
+    if (user && user.avatar) {
+      await deleteAvatar(userId);
+    }
+    await user?.deleteOne();
+  },
+  updateAvatar: async (userId: string, file?: Express.Multer.File) => {
+    if (!file) {
+      throw createHttpError(400, 'No file provided');
+    }
+
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      throw createHttpError(404, 'User not found');
+    }
+
+    try {
+      // Delete old avatar if exists
+      if (user.avatar) {
+        await deleteAvatar(userId);
+      }
+
+      const uploadResult = await uploadAvatar(file.buffer, userId);
+
+      if (!uploadResult.success || !uploadResult.data) {
+        throw createHttpError(
+          500,
+          uploadResult.error || 'Failed to upload avatar'
+        );
+      }
+
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        { avatar: uploadResult.data.secure_url },
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedUser) {
+        throw createHttpError(500, 'Failed to update user avatar');
+      }
+
+      return uploadResult.data.secure_url;
+    } catch (error) {
+      throw createHttpError(500, 'Failed to update avatar');
+    }
   }
 };
 
