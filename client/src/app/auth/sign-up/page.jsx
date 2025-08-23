@@ -1,11 +1,12 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import React from 'react';
+import React, { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { FaFacebook, FaGoogle } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router';
 import { toast } from 'sonner';
 
+import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
 import {
   Card,
@@ -31,6 +32,7 @@ import { loadUser } from '~/store/features/authSlice';
 const SignUp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
   const form = useForm({
     resolver: yupResolver(signUpSchema),
@@ -38,13 +40,31 @@ const SignUp = () => {
       email: '',
       name: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      avatar: undefined
     }
   });
 
+  const watchedAvatar = form.watch('avatar');
+
   const onSubmit = async data => {
     try {
-      const response = await axiosInstance.post('/api/auth/sign-up', data);
+      const formData = new FormData();
+      formData.append('email', data.email);
+      formData.append('name', data.name);
+      formData.append('password', data.password);
+      formData.append('confirmPassword', data.confirmPassword);
+
+      if (data.avatar && data.avatar[0]) {
+        formData.append('avatar', data.avatar[0]);
+      }
+
+      const response = await axiosInstance.post('/api/auth/sign-up', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
       const { accessToken } = response.data.data;
 
       dispatch(loadUser({ accessToken }));
@@ -58,6 +78,10 @@ const SignUp = () => {
         toast.error('Sign up failed. Please try again.');
       }
     }
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
   };
 
   return (
@@ -104,6 +128,53 @@ const SignUp = () => {
 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+              {/* Avatar Upload Section */}
+              <FormField
+                control={form.control}
+                name='avatar'
+                render={({ field: { onChange, value, ...field } }) => (
+                  <FormItem>
+                    <FormLabel>Profile Picture (Optional)</FormLabel>
+                    <FormControl>
+                      <div className='flex flex-col items-center space-y-2'>
+                        <div
+                          className='w-20 h-20 cursor-pointer transition-all duration-200 hover:opacity-60'
+                          onClick={handleAvatarClick}
+                        >
+                          <Avatar className='w-full h-full border-2 border-gray-300'>
+                            <AvatarImage
+                              src={
+                                watchedAvatar && watchedAvatar[0]
+                                  ? URL.createObjectURL(watchedAvatar[0])
+                                  : undefined
+                              }
+                              alt='Profile preview'
+                            />
+                            <AvatarFallback className='text-xs'>
+                              {watchedAvatar && watchedAvatar[0]
+                                ? 'IMG'
+                                : 'Add Avatar'}
+                            </AvatarFallback>
+                          </Avatar>
+                        </div>
+
+                        <Input
+                          {...field}
+                          ref={fileInputRef}
+                          type='file'
+                          accept='image/*'
+                          className='hidden'
+                          onChange={e => {
+                            onChange(e.target.files);
+                          }}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name='name'

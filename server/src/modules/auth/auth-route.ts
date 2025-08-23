@@ -3,6 +3,7 @@ import passport from 'passport';
 
 import validate from '~/middleware/validate';
 import asyncHandler from '~/utils/async-handler';
+import { uploadSingle } from '~/utils/multer';
 
 import AuthController from './auth-controller';
 import {
@@ -16,6 +17,7 @@ const router: Router = express.Router();
 
 router.post(
   '/sign-up',
+  uploadSingle('avatar'),
   validate(LocalSignUp.shape),
   asyncHandler(AuthController.signUp)
 );

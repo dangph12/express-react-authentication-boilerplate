@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 
 import AuthModel from '~/modules/auth/auth-model';
 import { comparePassword, hashPassword } from '~/utils/bcrypt';
+import { uploadAvatar } from '~/utils/cloudinary';
 import { sendMail } from '~/utils/email/mailer';
 import {
   generateResetPasswordToken,
@@ -40,8 +41,28 @@ const AuthService = {
       refreshToken
     };
   },
-  signUp: async (userData: IUser, password: string) => {
+  signUp: async (
+    userData: IUser,
+    password: string,
+    avatarFile?: Express.Multer.File
+  ) => {
     const user = await UserService.create(userData);
+
+    if (avatarFile) {
+      try {
+        const uploadResult = await uploadAvatar(
+          avatarFile.buffer,
+          user._id.toString()
+        );
+        if (uploadResult.success && uploadResult.data) {
+          await UserService.update(user._id.toString(), {
+            avatar: uploadResult.data.secure_url
+          });
+        }
+      } catch (error) {
+        console.error('Avatar upload failed during signup:', error);
+      }
+    }
 
     const hashedPassword = await hashPassword(password);
 

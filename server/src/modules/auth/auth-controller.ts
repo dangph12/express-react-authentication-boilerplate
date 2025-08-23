@@ -29,10 +29,12 @@ const AuthController = {
   },
   signUp: async (req: Request, res: Response) => {
     const { password, confirmPassword, ...userData } = req.body;
+    const avatar = req.file;
 
     const { user, accessToken, refreshToken } = await AuthService.signUp(
       userData,
-      password
+      password,
+      avatar
     );
 
     res.cookie('refreshToken', refreshToken, {
@@ -90,9 +92,12 @@ const AuthController = {
   },
   loginWithProvider: async (req: Request, res: Response) => {
     // This user is from create method, so it has type Document
+    console.log('User logged in with provider:', req.user);
     const user = req.user as Document<unknown, object, IUser> & IUser;
     if (!user || !user._id) {
-      return res.status(400).json(ApiResponse.failed('User not found'));
+      return res
+        .status(400)
+        .json(ApiResponse.failed('User not found in controller'));
     }
 
     const { accessToken, refreshToken } = generateToken({
