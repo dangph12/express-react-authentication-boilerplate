@@ -7,15 +7,12 @@ export const initializeAuth = createAsyncThunk(
   'auth/initializeAuth',
   async () => {
     try {
-      let accessToken =
+      const accessToken =
         localStorage.getItem('accessToken') ||
         sessionStorage.getItem('accessToken');
 
       if (!accessToken) {
-        const response = await axiosInstance.post(
-          '/api/auth/refresh-access-token'
-        );
-        accessToken = response.data.data.accessToken;
+        return null;
       }
 
       const decoded = jwtDecode(accessToken);
@@ -24,6 +21,18 @@ export const initializeAuth = createAsyncThunk(
       localStorage.removeItem('accessToken');
       sessionStorage.removeItem('accessToken');
       return null;
+    }
+  }
+);
+
+export const logout = createAsyncThunk(
+  'auth/logout',
+  async (_, { rejectWithValue }) => {
+    try {
+      await axiosInstance.post('/api/auth/logout');
+      return true;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Logout failed');
     }
   }
 );
@@ -53,12 +62,6 @@ export const authSlice = createSlice({
       } catch (error) {
         state.user = null;
       }
-    },
-    removeUser: state => {
-      state.user = null;
-      state.error = null;
-      localStorage.removeItem('accessToken');
-      sessionStorage.removeItem('accessToken');
     }
   },
   extraReducers: builder => {
@@ -85,10 +88,27 @@ export const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.user = null;
+      })
+      .addCase(logout.pending, state => {
+        state.loading = true;
+      })
+      .addCase(logout.fulfilled, state => {
+        state.loading = false;
+        state.user = null;
+        state.error = null;
+        localStorage.removeItem('accessToken');
+        sessionStorage.removeItem('accessToken');
+      })
+      .addCase(logout.rejected, state => {
+        state.loading = false;
+        state.user = null;
+        state.error = null;
+        localStorage.removeItem('accessToken');
+        sessionStorage.removeItem('accessToken');
       });
   }
 });
 
-export const { loadUser, removeUser } = authSlice.actions;
+export const { loadUser } = authSlice.actions;
 
 export default authSlice.reducer;
