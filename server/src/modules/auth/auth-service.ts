@@ -49,18 +49,14 @@ const AuthService = {
     const user = await UserService.create(userData);
 
     if (avatarFile) {
-      try {
-        const uploadResult = await uploadAvatar(
-          avatarFile.buffer,
-          user._id.toString()
-        );
-        if (uploadResult.success && uploadResult.data) {
-          await UserService.update(user._id.toString(), {
-            avatar: uploadResult.data.secure_url
-          });
-        }
-      } catch (error) {
-        console.error('Avatar upload failed during signup:', error);
+      const uploadResult = await uploadAvatar(
+        avatarFile.buffer,
+        user._id.toString()
+      );
+      if (uploadResult.success && uploadResult.data) {
+        await UserService.update(user._id.toString(), {
+          avatar: uploadResult.data.secure_url
+        });
       }
     }
 
