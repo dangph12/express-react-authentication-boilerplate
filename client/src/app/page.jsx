@@ -1,5 +1,6 @@
+import { useTheme } from 'next-themes';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router';
 
 import { Button } from '~/components/ui/button';
@@ -8,7 +9,11 @@ import { clearAvatar } from '~/store/features/avatar-slice';
 
 const Page = () => {
   const dispatch = useDispatch();
-  const theme = useSelector(state => state.theme.value);
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
 
   const handleLogout = () => {
     dispatch(logout());
@@ -22,9 +27,8 @@ const Page = () => {
         <Link to='/profile'>Profile</Link>
         <Link to='/auth/login'>Login</Link>
         <Link to='/auth/sign-up'>Sign Up</Link>
-        <Button className='sm' onClick={handleLogout}>
-          Logout
-        </Button>
+        <Button onClick={handleLogout}>Logout</Button>
+        <Button onClick={toggleTheme}>Toggle Theme</Button>
       </div>
     </>
   );

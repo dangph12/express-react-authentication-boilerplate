@@ -1,12 +1,11 @@
+import { useTheme } from 'next-themes';
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router';
 
 import { Toaster } from '~/components/ui/sonner';
 
 const AuthLayout = () => {
-  const theme = useSelector(state => state.theme.value);
-
+  const { theme } = useTheme();
   return (
     <div>
       <Outlet />

@@ -1,3 +1,4 @@
+import { ThemeProvider } from 'next-themes';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RouterProvider } from 'react-router';
@@ -7,13 +8,8 @@ import router from '~/routes/router';
 import { initializeAuth } from '~/store/features/auth-slice';
 
 const App = () => {
-  const theme = useSelector(state => state.theme.value);
   const { loading } = useSelector(state => state.auth);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    document.documentElement.setAttribute('class', theme);
-  }, [theme]);
 
   useEffect(() => {
     dispatch(initializeAuth());
@@ -27,7 +23,17 @@ const App = () => {
     );
   }
 
-  return <RouterProvider router={router} />;
+  return (
+    <ThemeProvider
+      attribute='class'
+      defaultTheme='light'
+      storageKey='theme'
+      enableSystem={true}
+      disableTransitionOnChange
+    >
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  );
 };
 
 export default App;

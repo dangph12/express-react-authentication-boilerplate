@@ -1,3 +1,4 @@
+import { useTheme } from 'next-themes';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router';
@@ -9,8 +10,8 @@ import { fetchAvatar } from '~/store/features/avatar-slice';
 const RootLayout = () => {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  const theme = useSelector(state => state.theme.value);
   const { url: avatarUrl } = useSelector(state => state.avatar);
+  const { theme } = useTheme();
 
   useEffect(() => {
     dispatch(fetchAvatar(user?.id));
