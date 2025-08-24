@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';
 
 import { Button } from '~/components/ui/button';
-import { logout } from '~/store/features/authSlice';
-import { clearAvatar } from '~/store/features/avatarSlice';
+import { logout } from '~/store/features/auth-slice';
+import { clearAvatar } from '~/store/features/avatar-slice';
 
 const Page = () => {
   const dispatch = useDispatch();

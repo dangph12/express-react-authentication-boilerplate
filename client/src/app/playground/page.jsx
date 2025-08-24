@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 
 import { Button } from '~/components/ui/button';
-import { toggleTheme } from '~/store/features/themeSlice';
+import { toggleTheme } from '~/store/features/theme-slice';
 
 const Page = () => {
   const dispatch = useDispatch();

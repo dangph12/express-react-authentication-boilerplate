@@ -6,9 +6,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Input } from '~/components/ui/input';
 import { Spinner } from '~/components/ui/spinner';
-import axiosInstance from '~/lib/axiosInstance';
+import axiosInstance from '~/lib/axios-instance';
 import { avatarSchema } from '~/lib/validations/avatar';
-import { setAvatar, updateAvatar } from '~/store/features/avatarSlice';
+import { setAvatar, updateAvatar } from '~/store/features/avatar-slice';
 
 const Page = () => {
   const { user, loading } = useSelector(state => state.auth);

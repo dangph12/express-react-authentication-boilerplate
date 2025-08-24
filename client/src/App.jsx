@@ -4,7 +4,7 @@ import { RouterProvider } from 'react-router';
 
 import { Spinner } from '~/components/ui/spinner';
 import router from '~/routes/router';
-import { initializeAuth } from '~/store/features/authSlice';
+import { initializeAuth } from '~/store/features/auth-slice';
 
 const App = () => {
   const theme = useSelector(state => state.theme.value);

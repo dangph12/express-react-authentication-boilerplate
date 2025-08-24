@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Navigate, useSearchParams } from 'react-router';
 
-import { loadUser } from '~/store/features/authSlice';
+import { loadUser } from '~/store/features/auth-slice';
 
 const AuthCallbackPage = () => {
   const dispatch = useDispatch();
