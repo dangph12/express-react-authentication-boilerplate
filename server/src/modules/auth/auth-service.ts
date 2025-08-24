@@ -124,6 +124,7 @@ const AuthService = {
       auth = await AuthModel.create({
         user: user._id,
         provider: 'local',
+        providerId: user.email,
         localPassword: hashedPassword
       });
       return;

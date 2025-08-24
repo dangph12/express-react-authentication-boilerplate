@@ -29,6 +29,8 @@ const errorHandler: ErrorRequestHandler = (
       ? 'Internal Server Error'
       : err.message;
 
+  console.error(err);
+
   res.status(500).json(ApiResponse.error(message));
 };
 

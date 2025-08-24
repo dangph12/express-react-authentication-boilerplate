@@ -159,14 +159,21 @@ const Login = () => {
         </CardContent>
 
         <CardFooter className='pt-6'>
-          <p className='text-sm text-muted-foreground text-center w-full'>
-            Don't have an account?{' '}
-            <Link
-              to='/auth/sign-up'
-              className='text-primary underline hover:text-primary/80'
-            >
-              Sign up
-            </Link>
+          <p className='text-sm text-muted-foreground flex flex-col gap-2'>
+            <span>
+              Don't have an account?{' '}
+              <Link to='/auth/sign-up' className='text-primary hover:underline'>
+                Sign up
+              </Link>
+            </span>
+            <span>
+              <Link
+                to='/auth/forgot-password'
+                className='text-primary hover:underline'
+              >
+                Forgot password?
+              </Link>
+            </span>
           </p>
         </CardFooter>
       </Card>
