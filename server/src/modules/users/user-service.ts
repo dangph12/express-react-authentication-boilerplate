@@ -60,19 +60,33 @@ const UserService = {
 
     return user;
   },
-  create: async (userData: IUser) => {
+  create: async (userData: IUser, avatarFile?: Express.Multer.File) => {
     const existingUser = await UserModel.findOne({ email: userData.email });
     if (existingUser) {
       throw createHttpError(400, 'User with this email already exists');
     }
 
-    const newUser = UserModel.create({
+    const newUser = await UserModel.create({
       ...userData,
       isActive: true
     });
 
     if (!newUser) {
       throw createHttpError(500, 'Failed to create user');
+    }
+
+    if (avatarFile) {
+      const uploadResult = await uploadAvatar(
+        avatarFile.buffer,
+        newUser._id.toString()
+      );
+      if (uploadResult.success && uploadResult.data) {
+        await UserService.update(newUser._id.toString(), {
+          avatar: uploadResult.data.secure_url
+        });
+      } else {
+        throw createHttpError(500, 'Failed to upload avatar');
+      }
     }
 
     return newUser;
