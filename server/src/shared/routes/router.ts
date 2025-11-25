@@ -3,7 +3,7 @@ import { Router } from 'express';
 import loginRoute from '~/features/auth/login/login-route';
 import loginWithProviderRoute from '~/features/auth/login-with-provider/login-with-provider-route';
 import signUpRoute from '~/features/auth/sign-up/sign-up-route';
-import viewUsersRoute from '~/features/manage-users/view-users/view-users-route';
+import viewUsersRoute from '~/features/users/view-users/view-users-route';
 
 const router = Router();
 
