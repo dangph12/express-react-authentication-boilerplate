@@ -24,8 +24,8 @@ const onError = (error: NodeJS.ErrnoException): void => {
   }
 };
 
-const url = new URL(SERVER_URL ?? 'http://localhost:8000');
-const port = Number(url.port) || 8000;
+const url = new URL(SERVER_URL ?? 'http://localhost:3000');
+const port = Number(url.port) || 3000;
 
 const server = app.listen(port, () => {
   console.log(`Server is Fire at ${SERVER_URL}`);
