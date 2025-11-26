@@ -2,14 +2,17 @@ import type { Request, Response } from 'express';
 
 import { ApiResponse } from '~/shared/utils';
 
-import type { SignUpRequest } from './sign-up-dto';
 import { SignUpService } from './sign-up-service';
 
 export const SignUpController = {
   signUp: async (req: Request, res: Response) => {
-    const signUpData = req.body as SignUpRequest;
-    const { accessToken, refreshToken } =
-      await SignUpService.signUp(signUpData);
+    const signUpData = req.body;
+    const file = req.file;
+
+    const { accessToken, refreshToken } = await SignUpService.signUp(
+      signUpData,
+      file
+    );
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
