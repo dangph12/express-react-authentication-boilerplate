@@ -2,12 +2,11 @@ import type { Request, Response } from 'express';
 
 import { ApiResponse } from '~/shared/utils';
 
-import type { LoginRequest } from './login-dto';
 import { LoginService } from './login-service';
 
 export const LoginController = {
   login: async (req: Request, res: Response) => {
-    const loginData = req.body as LoginRequest;
+    const loginData = req.body;
     const { accessToken, refreshToken } = await LoginService.login(loginData);
 
     res.cookie('refreshToken', refreshToken, {
