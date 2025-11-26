@@ -32,7 +32,7 @@ export const CreateUserService = {
       verifyAt: new Date()
     });
 
-    await sendMail({
+    sendMail({
       to: newUser.email,
       subject: 'Welcome to Our Platform',
       template: 'create-user',
