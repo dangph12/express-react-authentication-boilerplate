@@ -7,11 +7,11 @@ import { SignUpService } from './sign-up-service';
 export const SignUpController = {
   signUp: async (req: Request, res: Response) => {
     const signUpData = req.body;
-    const file = req.file;
+    const avatar = req.file;
 
     const { accessToken, refreshToken } = await SignUpService.signUp(
       signUpData,
-      file
+      avatar
     );
 
     res.cookie('refreshToken', refreshToken, {

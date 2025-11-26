@@ -10,9 +10,9 @@ import type { SignUpRequest, SignUpResponse } from './sign-up-dto';
 export const SignUpService = {
   signUp: async (
     data: SignUpRequest,
-    file?: Express.Multer.File
+    avatar?: Express.Multer.File
   ): Promise<SignUpResponse> => {
-    const newUser = await createNewUser(data, file);
+    const newUser = await createNewUser(data, avatar);
 
     const existingAuth = await AuthModel.findOne({
       provider: 'local',
@@ -47,7 +47,7 @@ export const SignUpService = {
 
 const createNewUser = async (
   data: SignUpRequest,
-  file?: Express.Multer.File
+  avatar?: Express.Multer.File
 ) => {
   const existingUser = await UserModel.findOne({ email: data.email });
 
@@ -64,9 +64,9 @@ const createNewUser = async (
     throw createHttpError(500, 'Failed to create user');
   }
 
-  if (file) {
+  if (avatar) {
     const uploadResult = await uploadAvatar(
-      file.buffer,
+      avatar.buffer,
       newUser._id.toString()
     );
     if (uploadResult.success && uploadResult.data) {
