@@ -12,7 +12,7 @@ export const ViewUsersService = {
 
     const result = await UserModel.paginate(filter, options);
 
-    if (!result || result.docs.length === 0) {
+    if (!result || result.totalDocs === 0) {
       throw createHttpError(404, 'No users found');
     }
 
