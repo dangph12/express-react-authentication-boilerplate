@@ -1,7 +1,7 @@
 import createHttpError from 'http-errors';
 
 import { User } from '~/entities/user';
-import { UserModel } from '~/shared/database/models';
+import { AuthModel, UserModel } from '~/shared/database/models';
 import { validateObjectId } from '~/shared/utils';
 
 export const DeleteUserService = {
@@ -15,6 +15,8 @@ export const DeleteUserService = {
     if (!deletedUser) {
       throw createHttpError(404, 'User not found');
     }
+
+    await AuthModel.deleteMany({ user: deletedUser._id });
 
     return deletedUser;
   }
