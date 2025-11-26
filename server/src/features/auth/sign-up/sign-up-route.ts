@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { validate } from '~/shared/middlewares';
-import { asyncHandler, uploadSingle } from '~/shared/utils';
+import { asyncHandler, uploadSingleImage } from '~/shared/utils';
 
 import { SignUpController } from './sign-up-controller';
 import { signUpRequestSchema } from './sign-up-dto';
@@ -10,7 +10,7 @@ const router = Router();
 
 router.post(
   '/sign-up',
-  uploadSingle('avatar'),
+  uploadSingleImage('avatar'),
   validate(signUpRequestSchema.shape),
   asyncHandler(SignUpController.signUp)
 );

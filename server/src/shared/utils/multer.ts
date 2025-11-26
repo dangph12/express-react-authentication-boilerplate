@@ -2,8 +2,51 @@ import multer from 'multer';
 
 const storage = multer.memoryStorage();
 
-const fileFilter = (req: any, file: Express.Multer.File, cb: any) => {
-  console.log('File filter called with:', file);
+const defaultFileFilter = (req: any, file: Express.Multer.File, cb: any) => {
+  cb(null, true);
+};
+
+export const createUpload = (options?: {
+  fileFilter?: (req: any, file: Express.Multer.File, cb: any) => void;
+  limits?: multer.Options['limits'];
+}) => {
+  return multer({
+    storage,
+    fileFilter: options?.fileFilter || defaultFileFilter,
+    limits: options?.limits || { fileSize: 5 * 1024 * 1024 }
+  });
+};
+
+export const uploadSingle = (
+  fieldName: string,
+  options?: {
+    fileFilter?: (req: any, file: Express.Multer.File, cb: any) => void;
+    limits?: multer.Options['limits'];
+  }
+) => {
+  return createUpload(options).single(fieldName);
+};
+
+export const uploadMultiple = (
+  fieldName: string,
+  maxCount: number,
+  options?: {
+    fileFilter?: (req: any, file: Express.Multer.File, cb: any) => void;
+    limits?: multer.Options['limits'];
+  }
+) => {
+  return createUpload(options).array(fieldName, maxCount);
+};
+
+export const uploadSingleImage = (fieldName: string) => {
+  return uploadSingle(fieldName, { fileFilter: imageFileFilter });
+};
+
+export const uploadMultipleImages = (fieldName: string, maxCount: number) => {
+  return uploadMultiple(fieldName, maxCount, { fileFilter: imageFileFilter });
+};
+
+const imageFileFilter = (req: any, file: Express.Multer.File, cb: any) => {
   if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
@@ -11,20 +54,4 @@ const fileFilter = (req: any, file: Express.Multer.File, cb: any) => {
   }
 };
 
-const upload = multer({
-  storage,
-  fileFilter,
-  limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
-  }
-});
-
-export const uploadSingle = (fieldName: string) => {
-  return upload.single(fieldName);
-};
-
-export const uploadMultiple = (fieldName: string, maxCount: number) => {
-  return upload.array(fieldName, maxCount);
-};
-
-export default upload;
+export default createUpload;
