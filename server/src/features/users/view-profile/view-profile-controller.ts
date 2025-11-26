@@ -6,7 +6,7 @@ import { ViewProfileService } from './view-profile-service';
 
 export const ViewProfileController = {
   viewProfile: async (req: Request, res: Response) => {
-    const id = req.user?.id.toString() || '';
+    const id = req.user?.id;
 
     const result = await ViewProfileService.viewProfile(id);
 

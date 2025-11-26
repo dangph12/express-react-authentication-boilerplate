@@ -1,10 +1,9 @@
-// types/express/index.d.ts
+import { HydratedDocument } from 'mongoose';
+
 import { User as AppUser } from '~/entities/user';
 
 declare global {
   namespace Express {
-    interface User extends AppUser {
-      id: string;
-    }
+    type User = HydratedDocument<AppUser>;
   }
 }
