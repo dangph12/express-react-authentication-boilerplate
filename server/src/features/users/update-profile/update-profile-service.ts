@@ -2,7 +2,7 @@ import createHttpError from 'http-errors';
 
 import { User } from '~/entities/user';
 import { UserModel } from '~/shared/database/models';
-import { uploadAvatar, validateObjectId } from '~/shared/utils';
+import { deleteAvatar, uploadAvatar, validateObjectId } from '~/shared/utils';
 
 import { UpdateProfileRequest } from './update-profile-dto';
 
@@ -25,12 +25,14 @@ export const UpdateProfileService = {
     }
 
     if (avatar) {
+      await deleteAvatar(updatedUser._id.toString());
+
       const uploadResult = await uploadAvatar(
         avatar.buffer,
         updatedUser._id.toString()
       );
       if (uploadResult.success && uploadResult.data) {
-        await UserModel.findByIdAndUpdate(updatedUser._id, {
+        await updatedUser.updateOne({
           avatar: uploadResult.data.secure_url
         });
       } else {
