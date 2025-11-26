@@ -1,10 +1,12 @@
 import { z } from 'zod';
 
+import { GENDER_VALUES } from '~/shared/constants/gender';
+
 export const signUpRequestSchema = z.object({
-  email: z.email(),
-  name: z.string().min(2),
-  gender: z.enum(['male', 'female', 'other']),
-  password: z.string().min(6)
+  email: z.email('Invalid email address'),
+  name: z.string().min(2, 'Name must be at least 2 characters long'),
+  gender: z.enum(GENDER_VALUES, { message: 'Invalid gender' }),
+  password: z.string().min(6, 'Password must be at least 6 characters long')
 });
 
 export type SignUpRequest = z.infer<typeof signUpRequestSchema>;
