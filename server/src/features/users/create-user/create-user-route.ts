@@ -1,6 +1,11 @@
 import { Router } from 'express';
 
-import { authenticate, authorize, validate } from '~/shared/middlewares';
+import {
+  authenticate,
+  authorize,
+  parseFormData,
+  validate
+} from '~/shared/middlewares';
 import { asyncHandler } from '~/shared/utils';
 
 import { CreateUserController } from './create-user-controller';
@@ -12,6 +17,7 @@ router.post(
   '/',
   authenticate(),
   authorize(['admin']),
+  parseFormData,
   validate(createUserRequestSchema.shape),
   asyncHandler(CreateUserController.createUser)
 );
