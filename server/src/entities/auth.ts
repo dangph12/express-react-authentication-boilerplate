@@ -6,4 +6,5 @@ export interface Auth {
   providerId: string;
   localPassword?: string;
   verifyAt: Date;
+  lastResetPasswordToken?: string;
 }

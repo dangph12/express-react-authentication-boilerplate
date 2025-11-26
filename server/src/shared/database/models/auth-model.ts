@@ -14,7 +14,8 @@ const authSchema = new Schema<AuthDocument>(
     provider: { type: String, required: true },
     providerId: { type: String, required: true },
     localPassword: { type: String },
-    verifyAt: { type: Date, required: true }
+    verifyAt: { type: Date, required: true },
+    lastResetPasswordToken: { type: String }
   },
   {
     timestamps: true
