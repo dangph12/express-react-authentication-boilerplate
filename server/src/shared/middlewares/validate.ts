@@ -22,7 +22,7 @@ export const validate = (fields: Record<string, ZodType<any>>) => {
     const result = schema.safeParse(req.body);
     if (!result.success) {
       const formattedErrors = formatZodErrors(result.error.issues);
-      throw createHttpError(400, formattedErrors);
+      return next(createHttpError(400, formattedErrors));
     }
     req.body = result.data;
     next();

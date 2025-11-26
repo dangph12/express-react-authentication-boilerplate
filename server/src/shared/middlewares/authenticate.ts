@@ -9,11 +9,17 @@ export const authenticate = () => {
       { session: false },
       (
         err: unknown,
-        user: Express.User,
+        user: Express.User | false | null,
         info: { message?: string } | undefined
       ) => {
-        if (err) throw createHttpError(500, 'Passport authentication error');
-        if (!user) throw createHttpError(401, 'Unauthorized');
+        if (err) {
+          return next(createHttpError(500, 'Passport authentication error'));
+        }
+
+        if (!user) {
+          return next(createHttpError(401, 'Unauthorized'));
+        }
+
         req.user = user;
         next();
       }
