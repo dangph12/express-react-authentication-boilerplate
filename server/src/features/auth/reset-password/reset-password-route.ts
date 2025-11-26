@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { validate } from '~/shared/middlewares';
+import { parseFormData, validate } from '~/shared/middlewares';
 import { asyncHandler } from '~/shared/utils';
 
 import { ResetPasswordController } from './reset-password-controller';
@@ -13,12 +13,14 @@ const router = Router();
 
 router.post(
   '/forgot-password',
+  parseFormData,
   validate(forgotPasswordRequestSchema.shape),
   asyncHandler(ResetPasswordController.forgotPassword)
 );
 
 router.post(
   '/reset-password',
+  parseFormData,
   validate(resetPasswordRequestSchema.shape),
   asyncHandler(ResetPasswordController.resetPassword)
 );

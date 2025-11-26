@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { validate } from '~/shared/middlewares';
+import { parseFormData, validate } from '~/shared/middlewares';
 import { asyncHandler } from '~/shared/utils';
 
 import { LoginController } from './login-controller';
@@ -10,6 +10,7 @@ const router = Router();
 
 router.post(
   '/login',
+  parseFormData,
   validate(loginRequestSchema.shape),
   asyncHandler(LoginController.login)
 );
