@@ -10,7 +10,7 @@ export const buildPaginateOptions = (parsed: QueryOptions): any => {
     select,
     populate,
     customLabels: {
-      totalDocs: 'total',
+      totalDocs: 'totalDocs',
       totalPages: 'totalPages',
       page: 'page',
       hasPrevPage: 'hasPrevPage',
