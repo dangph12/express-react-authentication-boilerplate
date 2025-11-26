@@ -5,12 +5,14 @@ import { User } from '~/entities/user';
 import { AuthModel } from '~/shared/database/models';
 import { generateToken } from '~/shared/utils';
 
+import { LoginWithProviderResponse } from './login-with-provider-dto';
+
 export const LoginWithProviderService = {
   loginWithProvider: async (
     provider: string,
     providerId: string,
     user: HydratedDocument<User>
-  ) => {
+  ): Promise<LoginWithProviderResponse> => {
     if (!user || !user._id) {
       throw createHttpError(400, 'User not found');
     }
