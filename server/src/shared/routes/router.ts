@@ -23,12 +23,14 @@ router.use('/auth', logoutRoute);
 router.use('/auth', refreshAccessTokenRoute);
 router.use('/auth', resetPasswordRoute);
 
-router.use('/users', createUserRoute);
-router.use('/users', updateUserRoute);
-router.use('/users', deleteUserRoute);
 router.use('/users', viewUsersRoute);
-router.use('/users', viewUserDetailRoute);
+router.use('/users', createUserRoute);
+
 router.use('/users', updateProfileRoute);
 router.use('/users', viewProfileRoute);
+
+router.use('/users', viewUserDetailRoute);
+router.use('/users', updateUserRoute);
+router.use('/users', deleteUserRoute);
 
 export default router;
