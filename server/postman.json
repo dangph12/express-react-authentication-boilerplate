@@ -98,7 +98,7 @@
                             "formdata": [
                                 {
                                     "key": "email",
-                                    "value": "haidangphan2015@gmail.com",
+                                    "value": "haidangphan2017@gmail.com",
                                     "type": "text",
                                     "disabled": false
                                 },
@@ -109,8 +109,20 @@
                                     "disabled": false
                                 },
                                 {
+                                    "key": "avatar",
+                                    "value": "file://D:\\Dữ liệu\\Mascot Blank.428\\V_1 + V_2\\Avatar v_2.png",
+                                    "type": "file",
+                                    "disabled": false
+                                },
+                                {
                                     "key": "gender",
                                     "value": "male",
+                                    "type": "text",
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "dob",
+                                    "value": "2004-05-13",
                                     "type": "text",
                                     "disabled": false
                                 },
@@ -118,12 +130,6 @@
                                     "key": "password",
                                     "value": "123456",
                                     "type": "text",
-                                    "disabled": false
-                                },
-                                {
-                                    "key": "avatar",
-                                    "value": "file://D:\\Dữ liệu\\Mascot Blank.428\\V_1 + V_2\\Avatar v_2.png",
-                                    "type": "file",
                                     "disabled": false
                                 }
                             ]
@@ -135,6 +141,36 @@
                                 "api",
                                 "auth",
                                 "sign-up"
+                            ],
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "query": [],
+                            "variable": []
+                        }
+                    },
+                    "response": [],
+                    "protocolProfileBehavior": {
+                        "strictSSL": false,
+                        "followRedirects": true
+                    }
+                },
+                {
+                    "name": "Logout",
+                    "description": "",
+                    "event": [],
+                    "auth": {},
+                    "request": {
+                        "auth": {},
+                        "method": "POST",
+                        "body": {},
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/auth/logout",
+                            "path": [
+                                "api",
+                                "auth",
+                                "logout"
                             ],
                             "host": [
                                 "{{baseUrl}}"
@@ -175,36 +211,6 @@
                                 "api",
                                 "auth",
                                 "forgot-password"
-                            ],
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "query": [],
-                            "variable": []
-                        }
-                    },
-                    "response": [],
-                    "protocolProfileBehavior": {
-                        "strictSSL": false,
-                        "followRedirects": true
-                    }
-                },
-                {
-                    "name": "Logout",
-                    "description": "",
-                    "event": [],
-                    "auth": {},
-                    "request": {
-                        "auth": {},
-                        "method": "POST",
-                        "body": {},
-                        "header": [],
-                        "url": {
-                            "raw": "{{baseUrl}}/api/auth/logout",
-                            "path": [
-                                "api",
-                                "auth",
-                                "logout"
                             ],
                             "host": [
                                 "{{baseUrl}}"
@@ -360,22 +366,22 @@
                                     "disabled": false
                                 },
                                 {
-                                    "key": "gender",
-                                    "value": "female",
-                                    "type": "text",
-                                    "disabled": false
-                                },
-                                {
                                     "key": "avatar",
                                     "value": "file://D:\\Dữ liệu\\Mascot Blank.428\\V_1 + V_2\\mascot.png",
                                     "type": "file",
                                     "disabled": false
                                 },
                                 {
-                                    "key": "isActive",
-                                    "value": "false",
+                                    "key": "gender",
+                                    "value": "female",
                                     "type": "text",
-                                    "disabled": true
+                                    "disabled": false
+                                },
+                                {
+                                    "key": "dob",
+                                    "value": "2008-08-09",
+                                    "type": "text",
+                                    "disabled": false
                                 }
                             ]
                         },
@@ -570,6 +576,12 @@
                                     "value": "user",
                                     "type": "text",
                                     "disabled": false
+                                },
+                                {
+                                    "key": "dob",
+                                    "value": "2004-05-13",
+                                    "type": "text",
+                                    "disabled": false
                                 }
                             ]
                         },
@@ -624,6 +636,11 @@
                                     "disabled": true
                                 },
                                 {
+                                    "key": "avatar",
+                                    "type": "file",
+                                    "disabled": true
+                                },
+                                {
                                     "key": "gender",
                                     "type": "text",
                                     "disabled": true
@@ -635,8 +652,14 @@
                                     "disabled": false
                                 },
                                 {
+                                    "key": "dob",
+                                    "value": "2008-08-09",
+                                    "type": "text",
+                                    "disabled": false
+                                },
+                                {
                                     "key": "isActive",
-                                    "value": "false",
+                                    "value": "true",
                                     "type": "text",
                                     "disabled": false
                                 }
@@ -657,6 +680,7 @@
                             "variable": [
                                 {
                                     "key": "id",
+                                    "value": "6929154db35a89a1216b545d",
                                     "description": "",
                                     "type": "string"
                                 }
