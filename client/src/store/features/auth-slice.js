@@ -1,25 +1,39 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
 
-import axiosInstance from '~/lib/axios-instance';
+import axiosInstance, { AUTH_SESSION_EXPIRED_EVENT } from '~/lib/api-client';
+
+const clearAuthTokens = () => {
+  localStorage.removeItem('accessToken');
+  sessionStorage.removeItem('accessToken');
+};
+
+const getStoredAccessToken = () => {
+  return (
+    localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')
+  );
+};
 
 export const initializeAuth = createAsyncThunk(
   'auth/initializeAuth',
-  async () => {
+  async (_, { dispatch }) => {
     try {
-      const accessToken =
-        localStorage.getItem('accessToken') ||
-        sessionStorage.getItem('accessToken');
+      const accessToken = getStoredAccessToken();
 
       if (!accessToken) {
         return null;
       }
 
       const decoded = jwtDecode(accessToken);
+
+      const currentTime = Date.now() / 1000;
+      if (decoded.exp && decoded.exp < currentTime) {
+        return { accessToken, user: decoded, isExpired: true };
+      }
+
       return { accessToken, user: decoded };
     } catch (error) {
-      localStorage.removeItem('accessToken');
-      sessionStorage.removeItem('accessToken');
+      clearAuthTokens();
       return null;
     }
   }
@@ -37,12 +51,21 @@ export const logout = createAsyncThunk(
   }
 );
 
+export const handleSessionExpired = createAsyncThunk(
+  'auth/handleSessionExpired',
+  async (error, { dispatch }) => {
+    clearAuthTokens();
+    return { error };
+  }
+);
+
 export const authSlice = createSlice({
   name: 'auth',
   initialState: {
     user: null,
     loading: true,
-    error: null
+    error: null,
+    sessionExpired: false
   },
   reducers: {
     loadUser: (state, action) => {
@@ -59,9 +82,14 @@ export const authSlice = createSlice({
         }
         const decoded = jwtDecode(accessToken);
         state.user = decoded;
+        state.sessionExpired = false;
       } catch (error) {
         state.user = null;
       }
+    },
+    clearSessionExpired: state => {
+      state.sessionExpired = false;
+      state.error = null;
     }
   },
   extraReducers: builder => {
@@ -96,19 +124,43 @@ export const authSlice = createSlice({
         state.loading = false;
         state.user = null;
         state.error = null;
-        localStorage.removeItem('accessToken');
-        sessionStorage.removeItem('accessToken');
+        state.sessionExpired = false;
+        clearAuthTokens();
       })
       .addCase(logout.rejected, state => {
         state.loading = false;
         state.user = null;
         state.error = null;
-        localStorage.removeItem('accessToken');
-        sessionStorage.removeItem('accessToken');
+        state.sessionExpired = false;
+        clearAuthTokens();
+      })
+      .addCase(handleSessionExpired.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = null;
+        state.sessionExpired = true;
+        state.error = action.payload?.error?.message || 'Session expired';
       });
   }
 });
 
-export const { loadUser } = authSlice.actions;
+export const { loadUser, clearSessionExpired } = authSlice.actions;
+
+export const setupSessionExpiredListener = dispatch => {
+  const handleSessionExpiredEvent = event => {
+    dispatch(handleSessionExpired(event.detail?.error));
+  };
+
+  window.addEventListener(
+    AUTH_SESSION_EXPIRED_EVENT,
+    handleSessionExpiredEvent
+  );
+
+  return () => {
+    window.removeEventListener(
+      AUTH_SESSION_EXPIRED_EVENT,
+      handleSessionExpiredEvent
+    );
+  };
+};
 
 export default authSlice.reducer;

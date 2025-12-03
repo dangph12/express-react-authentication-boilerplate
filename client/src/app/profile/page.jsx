@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Input } from '~/components/ui/input';
 import { Spinner } from '~/components/ui/spinner';
-import axiosInstance from '~/lib/axios-instance';
+import axiosInstance from '~/lib/api-client';
 import { avatarSchema } from '~/lib/validations/avatar';
 import { setAvatar, updateAvatar } from '~/store/features/avatar-slice';
 
@@ -38,7 +38,10 @@ const Page = () => {
           setUserData(response.data.data);
           dispatch(setAvatar(response.data.data.avatar));
         } catch (error) {
-          console.error('Error fetching user data:', error);
+          toast.error(
+            error.response?.data?.message ||
+              'Failed to load profile. Please try again.'
+          );
         } finally {
           setFetchingData(false);
         }

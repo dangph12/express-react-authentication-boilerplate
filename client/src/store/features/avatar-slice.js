@@ -1,30 +1,26 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import axiosInstance from '~/lib/axios-instance';
+import axiosInstance from '~/lib/api-client';
 
 export const fetchAvatar = createAsyncThunk(
   'avatar/fetchAvatar',
   async userId => {
     if (!userId) return null;
-    const response = await axiosInstance.get(`/api/users/${userId}`);
+    const response = await axiosInstance.get(`/api/users/me`);
     return response.data.data.avatar;
   }
 );
 
 export const updateAvatar = createAsyncThunk(
   'avatar/updateAvatar',
-  async ({ userId, file }) => {
+  async ({ file }) => {
     const formData = new FormData();
     formData.append('avatar', file);
-    const response = await axiosInstance.patch(
-      `/api/users/${userId}/avatar`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+    const response = await axiosInstance.patch(`/api/users/me`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
       }
-    );
+    });
     return response.data.data.avatar;
   }
 );
