@@ -19,7 +19,7 @@ import {
   FormMessage
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
-import axiosInstance from '~/lib/axios-instance';
+import axiosInstance from '~/lib/api-client';
 import { forgotPasswordSchema } from '~/lib/validations/auth';
 
 const Page = () => {
@@ -36,7 +36,10 @@ const Page = () => {
         '/api/auth/forgot-password',
         data
       );
-      toast.success('Password reset link sent! Please check your email.');
+      toast.success(
+        response.data.message ||
+          'Password reset link sent! Please check your email.'
+      );
     } catch (error) {
       toast.success('Password reset link sent! Please check your email.');
     }

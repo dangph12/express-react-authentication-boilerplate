@@ -20,7 +20,7 @@ import {
   FormMessage
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
-import axiosInstance from '~/lib/axios-instance';
+import axiosInstance from '~/lib/api-client';
 import { resetPasswordSchema } from '~/lib/validations/auth';
 
 const Page = () => {

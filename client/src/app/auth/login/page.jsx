@@ -25,7 +25,7 @@ import {
   FormMessage
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
-import axiosInstance from '~/lib/axios-instance';
+import axiosInstance from '~/lib/api-client';
 import { loginSchema } from '~/lib/validations/auth';
 import { loadUser } from '~/store/features/auth-slice';
 
@@ -49,9 +49,11 @@ const Login = () => {
       const { accessToken } = response.data.data;
       dispatch(loadUser({ accessToken, isRemember }));
       navigate('/');
-      toast.success('Login successful!');
+      toast.success(response.data.message || 'Login successful');
     } catch (error) {
-      toast.error('Login failed.');
+      toast.error(
+        error.response?.data?.message || 'Login failed. Please try again.'
+      );
     }
   };
 

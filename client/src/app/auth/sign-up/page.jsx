@@ -25,7 +25,7 @@ import {
   FormMessage
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
-import axiosInstance from '~/lib/axios-instance';
+import axiosInstance from '~/lib/api-client';
 import { signUpSchema } from '~/lib/validations/auth';
 import { loadUser } from '~/store/features/auth-slice';
 
@@ -70,13 +70,11 @@ const SignUp = () => {
       dispatch(loadUser({ accessToken }));
 
       navigate('/');
-      toast.success('Account created successfully!');
+      toast.success(response.data.message || 'Account created successfully');
     } catch (error) {
-      if (error.response?.data?.message) {
-        toast.error(error.response.data.message);
-      } else {
-        toast.error('Sign up failed. Please try again.');
-      }
+      toast.error(
+        error.response?.data?.message || 'Sign up failed. Please try again.'
+      );
     }
   };
 
