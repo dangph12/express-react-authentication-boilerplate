@@ -1,5 +1,3 @@
-import React from 'react';
-
 import LoginCard from '~/features/auth/login/components/login-card';
 
 const Login = () => {
