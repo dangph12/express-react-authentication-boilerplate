@@ -3,9 +3,3 @@ export enum Gender {
   FEMALE = 'female',
   OTHER = 'other'
 }
-
-export const GENDER_VALUES = [
-  Gender.MALE,
-  Gender.FEMALE,
-  Gender.OTHER
-] as const;
