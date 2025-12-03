@@ -1,8 +1,8 @@
 import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router';
 
-const RootLayout = lazy(() => import('~/layouts/root-layout'));
-const AuthLayout = lazy(() => import('~/layouts/auth-layout'));
+const RootLayout = lazy(() => import('~/components/layouts/root-layout'));
+const AuthLayout = lazy(() => import('~/components/layouts/auth-layout'));
 
 const ErrorComponent = lazy(() => import('~/components/error'));
 
