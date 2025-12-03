@@ -13,12 +13,8 @@ export const LoginService = {
       providerId: data.email
     });
 
-    if (!auth) {
-      throw createHttpError(401, 'Invalid credentials');
-    }
-
-    if (!auth.localPassword) {
-      throw createHttpError(401, 'Invalid credentials');
+    if (!auth || !auth.localPassword) {
+      throw createHttpError(401, 'Invalid email or password');
     }
 
     const isValidPassword = await comparePassword(
