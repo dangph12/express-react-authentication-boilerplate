@@ -1,43 +1,30 @@
+import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from 'next-themes';
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { Provider } from 'react-redux';
 import { RouterProvider } from 'react-router';
 
-import { Spinner } from '~/components/ui/spinner';
+import { queryClient } from '~/lib/query-client';
 import router from '~/routes/router';
-import {
-  initializeAuth,
-  setupSessionExpiredListener
-} from '~/store/features/auth-slice';
+import store from '~/store/index';
 
 const App = () => {
-  const { loading } = useSelector(state => state.auth);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(initializeAuth());
-    const cleanup = setupSessionExpiredListener(dispatch);
-    return cleanup;
-  }, [dispatch]);
-
-  if (loading) {
-    return (
-      <div className='flex items-center justify-center min-h-screen'>
-        <Spinner size='lg' />
-      </div>
-    );
-  }
-
   return (
-    <ThemeProvider
-      attribute='class'
-      defaultTheme='light'
-      storageKey='theme'
-      enableSystem={true}
-      disableTransitionOnChange
-    >
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='light'
+          storageKey='theme'
+          enableSystem={true}
+          disableTransitionOnChange
+        >
+          <RouterProvider router={router} />
+        </ThemeProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </Provider>
   );
 };
 
