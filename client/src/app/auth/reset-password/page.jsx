@@ -20,7 +20,7 @@ import {
   FormMessage
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
-import axiosInstance from '~/lib/api-client';
+import apiClient from '~/lib/api-client';
 import { resetPasswordSchema } from '~/lib/validations/auth';
 
 const Page = () => {
@@ -38,7 +38,7 @@ const Page = () => {
 
   const onSubmit = async data => {
     try {
-      const response = await axiosInstance.post(
+      const response = await apiClient.post(
         `/api/auth/reset-password?token=${token}`,
         data
       );

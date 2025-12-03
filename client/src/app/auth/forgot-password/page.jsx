@@ -19,7 +19,7 @@ import {
   FormMessage
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
-import axiosInstance from '~/lib/api-client';
+import apiClient from '~/lib/api-client';
 import { forgotPasswordSchema } from '~/lib/validations/auth';
 
 const Page = () => {
@@ -32,10 +32,7 @@ const Page = () => {
 
   const onSubmit = async data => {
     try {
-      const response = await axiosInstance.post(
-        '/api/auth/forgot-password',
-        data
-      );
+      const response = await apiClient.post('/api/auth/forgot-password', data);
       toast.success(
         response.data.message ||
           'Password reset link sent! Please check your email.'

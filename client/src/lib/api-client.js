@@ -6,7 +6,7 @@ import {
   requiresReAuthentication
 } from '~/features/auth/refresh-access-token/api/refresh-access-token';
 
-const axiosInstance = axios.create({
+const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   timeout: 10000,
   withCredentials: true
@@ -50,7 +50,7 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-axiosInstance.interceptors.request.use(
+apiClient.interceptors.request.use(
   config => {
     const token =
       localStorage.getItem('accessToken') ||
@@ -63,7 +63,7 @@ axiosInstance.interceptors.request.use(
   error => Promise.reject(error)
 );
 
-axiosInstance.interceptors.response.use(
+apiClient.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config;
@@ -82,7 +82,7 @@ axiosInstance.interceptors.response.use(
       })
         .then(token => {
           originalRequest.headers['Authorization'] = `Bearer ${token}`;
-          return axiosInstance(originalRequest);
+          return apiClient(originalRequest);
         })
         .catch(err => Promise.reject(err));
     }
@@ -97,7 +97,7 @@ axiosInstance.interceptors.response.use(
       processQueue(null, accessToken);
 
       originalRequest.headers['Authorization'] = `Bearer ${accessToken}`;
-      return axiosInstance(originalRequest);
+      return apiClient(originalRequest);
     } catch (refreshError) {
       processQueue(refreshError, null);
 
@@ -113,4 +113,4 @@ axiosInstance.interceptors.response.use(
   }
 );
 
-export default axiosInstance;
+export default apiClient;

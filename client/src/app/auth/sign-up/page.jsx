@@ -25,7 +25,7 @@ import {
   FormMessage
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
-import axiosInstance from '~/lib/api-client';
+import apiClient from '~/lib/api-client';
 import { signUpSchema } from '~/lib/validations/auth';
 import { loadUser } from '~/store/features/auth-slice';
 
@@ -59,7 +59,7 @@ const SignUp = () => {
         formData.append('avatar', data.avatar[0]);
       }
 
-      const response = await axiosInstance.post('/api/auth/sign-up', formData, {
+      const response = await apiClient.post('/api/auth/sign-up', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

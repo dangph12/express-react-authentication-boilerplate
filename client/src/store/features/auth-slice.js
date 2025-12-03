@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
 
-import axiosInstance, { AUTH_SESSION_EXPIRED_EVENT } from '~/lib/api-client';
+import apiClient, { AUTH_SESSION_EXPIRED_EVENT } from '~/lib/api-client';
 
 const clearAuthTokens = () => {
   localStorage.removeItem('accessToken');
@@ -43,7 +43,7 @@ export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
-      await axiosInstance.post('/api/auth/logout');
+      await apiClient.post('/api/auth/logout');
       return true;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Logout failed');
