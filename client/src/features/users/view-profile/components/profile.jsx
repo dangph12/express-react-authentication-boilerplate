@@ -1,3 +1,4 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import { format } from 'date-fns';
 import {
   Calendar as CalendarIcon,
@@ -7,13 +8,22 @@ import {
   Save,
   X
 } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
 import { Calendar } from '~/components/ui/calendar';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
 import {
   Popover,
@@ -30,7 +40,12 @@ import {
 import { Spinner } from '~/components/ui/spinner';
 import { GENDER_OPTIONS } from '~/constants/gender';
 import { useUpdateProfile } from '~/features/users/update-profile/api/update-profile';
+import { updateProfileSchema } from '~/features/users/update-profile/utils/validation';
 import { useProfile } from '~/features/users/view-profile/api/view-profile';
+import {
+  formatDate,
+  getGenderLabel
+} from '~/features/users/view-profile/utils/utils';
 import { cn } from '~/lib/utils';
 import { logout } from '~/store/features/auth-slice';
 
@@ -43,36 +58,44 @@ const Profile = () => {
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({});
   const [avatarPreview, setAvatarPreview] = useState(null);
-  const [avatarFile, setAvatarFile] = useState(null);
+
+  const form = useForm({
+    resolver: yupResolver(updateProfileSchema),
+    defaultValues: {
+      name: '',
+      gender: '',
+      dob: '',
+      avatar: undefined
+    }
+  });
+
+  useEffect(() => {
+    if (isEditing && profile) {
+      form.reset({
+        name: profile.name || '',
+        gender: profile.gender || '',
+        dob: profile.dob ? profile.dob.split('T')[0] : '',
+        avatar: undefined
+      });
+    }
+  }, [isEditing, profile, form]);
 
   const handleEdit = () => {
-    setFormData({
-      name: profile?.name || '',
-      gender: profile?.gender || '',
-      dob: profile?.dob ? profile.dob.split('T')[0] : ''
-    });
     setIsEditing(true);
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setFormData({});
     setAvatarPreview(null);
-    setAvatarFile(null);
+    form.reset();
   };
 
-  const handleSave = () => {
-    const dataToUpdate = { ...formData };
-    if (avatarFile) {
-      dataToUpdate.avatar = avatarFile;
-    }
-    updateProfile(dataToUpdate, {
+  const handleSave = data => {
+    updateProfile(data, {
       onSuccess: () => {
         setIsEditing(false);
         setAvatarPreview(null);
-        setAvatarFile(null);
       }
     });
   };
@@ -84,7 +107,6 @@ const Profile = () => {
   const handleAvatarChange = e => {
     const file = e.target.files?.[0];
     if (file) {
-      setAvatarFile(file);
       setAvatarPreview(URL.createObjectURL(file));
       updateProfile({ avatar: file });
     }
@@ -93,24 +115,6 @@ const Profile = () => {
   const handleLogout = async () => {
     await dispatch(logout());
     navigate('/');
-  };
-
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const formatDate = dateString => {
-    if (!dateString) return 'Not set';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  };
-
-  const getGenderLabel = value => {
-    const option = GENDER_OPTIONS.find(opt => opt.value === value);
-    return option?.label || 'Not set';
   };
 
   if (isLoading) {
@@ -142,9 +146,6 @@ const Profile = () => {
                 />
               </AvatarFallback>
             </Avatar>
-            <div className='absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity'>
-              <Camera className='h-6 w-6 text-white' />
-            </div>
             <div className='absolute -bottom-1 -right-1 h-7 w-7 rounded-full bg-muted border-2 border-background flex items-center justify-center'>
               <Camera className='h-3.5 w-3.5' />
             </div>
@@ -180,7 +181,11 @@ const Profile = () => {
                 <X className='h-4 w-4 mr-1' />
                 Cancel
               </Button>
-              <Button size='sm' onClick={handleSave} disabled={isUpdating}>
+              <Button
+                size='sm'
+                onClick={form.handleSubmit(handleSave)}
+                disabled={isUpdating}
+              >
                 {isUpdating ? (
                   <Spinner className='h-4 w-4 mr-1' />
                 ) : (
@@ -201,106 +206,134 @@ const Profile = () => {
           </Button>
         </div>
       </div>
+
       <div className='bg-card rounded-lg border p-6'>
         <h2 className='text-lg font-semibold mb-4'>Personal Information</h2>
-        <div className='grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6'>
-          <div className='space-y-1'>
-            <label className='text-sm font-medium text-muted-foreground'>
-              Full Name
-            </label>
-            {isEditing ? (
-              <Input
-                value={formData.name}
-                onChange={e => handleInputChange('name', e.target.value)}
-                placeholder='Enter your name'
-              />
-            ) : (
-              <p className='text-sm py-2'>{profile?.name || 'Not set'}</p>
-            )}
-          </div>
+        <Form {...form}>
+          <form className='grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6'>
+            <FormField
+              control={form.control}
+              name='name'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-muted-foreground'>
+                    Full Name
+                  </FormLabel>
+                  {isEditing ? (
+                    <FormControl>
+                      <Input placeholder='Enter your name' {...field} />
+                    </FormControl>
+                  ) : (
+                    <p className='text-sm py-2'>{profile?.name || 'Not set'}</p>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div className='space-y-1'>
-            <label className='text-sm font-medium text-muted-foreground'>
-              Email
-            </label>
-            <p className='text-sm py-2'>{profile?.email}</p>
-          </div>
+            <div className='space-y-1'>
+              <label className='text-sm font-medium text-muted-foreground'>
+                Email
+              </label>
+              <p className='text-sm py-2'>{profile?.email}</p>
+            </div>
 
-          <div className='space-y-1'>
-            <label className='text-sm font-medium text-muted-foreground'>
-              Gender
-            </label>
-            {isEditing ? (
-              <Select
-                value={formData.gender}
-                onValueChange={value => handleInputChange('gender', value)}
-              >
-                <SelectTrigger className='w-full'>
-                  <SelectValue placeholder='Select gender' />
-                </SelectTrigger>
-                <SelectContent>
-                  {GENDER_OPTIONS.map(option => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            ) : (
-              <p className='text-sm py-2'>{getGenderLabel(profile?.gender)}</p>
-            )}
-          </div>
+            <FormField
+              control={form.control}
+              name='gender'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-muted-foreground'>
+                    Gender
+                  </FormLabel>
+                  {isEditing ? (
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger className='w-full'>
+                          <SelectValue placeholder='Select gender' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {GENDER_OPTIONS.map(option => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <p className='text-sm py-2'>
+                      {getGenderLabel(profile?.gender)}
+                    </p>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div className='space-y-1'>
-            <label className='text-sm font-medium text-muted-foreground'>
-              Date of Birth
-            </label>
-            {isEditing ? (
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant='outline'
-                    className={cn(
-                      'w-full pl-3 text-left font-normal',
-                      !formData.dob && 'text-muted-foreground'
-                    )}
-                  >
-                    {formData.dob ? (
-                      format(new Date(formData.dob), 'PPP')
-                    ) : (
-                      <span>Pick a date</span>
-                    )}
-                    <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className='w-auto p-0' align='start'>
-                  <Calendar
-                    mode='single'
-                    captionLayout='dropdown'
-                    selected={formData.dob ? new Date(formData.dob) : undefined}
-                    onSelect={date => {
-                      handleInputChange(
-                        'dob',
-                        date ? format(date, 'yyyy-MM-dd') : ''
-                      );
-                    }}
-                    disabled={date =>
-                      date > new Date() || date < new Date('1900-01-01')
-                    }
-                    defaultMonth={
-                      formData.dob ? new Date(formData.dob) : new Date(2000, 0)
-                    }
-                    startMonth={new Date(1900, 0)}
-                    endMonth={new Date()}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-            ) : (
-              <p className='text-sm py-2'>{formatDate(profile?.dob)}</p>
-            )}
-          </div>
-        </div>
+            <FormField
+              control={form.control}
+              name='dob'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-muted-foreground'>
+                    Date of Birth
+                  </FormLabel>
+                  {isEditing ? (
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant='outline'
+                            className={cn(
+                              'w-full pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground'
+                            )}
+                          >
+                            {field.value ? (
+                              format(new Date(field.value), 'PPP')
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className='w-auto p-0' align='start'>
+                        <Calendar
+                          mode='single'
+                          captionLayout='dropdown'
+                          selected={
+                            field.value ? new Date(field.value) : undefined
+                          }
+                          onSelect={date => {
+                            field.onChange(
+                              date ? format(date, 'yyyy-MM-dd') : ''
+                            );
+                          }}
+                          disabled={date =>
+                            date > new Date() || date < new Date('1900-01-01')
+                          }
+                          defaultMonth={
+                            field.value
+                              ? new Date(field.value)
+                              : new Date(2000, 0)
+                          }
+                          startMonth={new Date(1900, 0)}
+                          endMonth={new Date()}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  ) : (
+                    <p className='text-sm py-2'>{formatDate(profile?.dob)}</p>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
       </div>
     </div>
   );
