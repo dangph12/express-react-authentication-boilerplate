@@ -175,7 +175,7 @@ const UsersTable = () => {
               control={form.control}
               name='name'
               render={({ field }) => (
-                <FormItem className='flex-1 min-w-[200px]'>
+                <FormItem className='w-full sm:w-64'>
                   <FormControl>
                     <div className='relative'>
                       <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
