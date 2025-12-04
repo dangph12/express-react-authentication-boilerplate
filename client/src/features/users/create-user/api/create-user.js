@@ -6,7 +6,7 @@ import { QUERY_KEYS } from '~/lib/query-keys';
 
 const createUser = async data => {
   const response = await apiClient.post('/api/users', data);
-  return response.data.data;
+  return response.data;
 };
 
 export const useCreateUser = ({ onSuccess } = {}) => {
@@ -14,10 +14,10 @@ export const useCreateUser = ({ onSuccess } = {}) => {
 
   return useMutation({
     mutationFn: createUser,
-    onSuccess: data => {
+    onSuccess: response => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.USERS });
-      toast.success('User created successfully');
-      onSuccess?.(data);
+      toast.success(response.message || 'User created successfully');
+      onSuccess?.(response.data);
     },
     onError: error => {
       toast.error(error.response?.data?.message || 'Failed to create user');

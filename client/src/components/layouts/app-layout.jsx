@@ -1,7 +1,9 @@
+import { useTheme } from 'next-themes';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router';
 
+import { Toaster } from '~/components/ui/sonner';
 import { Spinner } from '~/components/ui/spinner';
 import {
   initializeAuth,
@@ -10,6 +12,7 @@ import {
 
 const AppLayout = () => {
   const { loading } = useSelector(state => state.auth);
+  const { theme } = useTheme();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -26,7 +29,12 @@ const AppLayout = () => {
     );
   }
 
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      <Toaster position='top-right' theme={theme} />
+    </>
+  );
 };
 
 export default AppLayout;

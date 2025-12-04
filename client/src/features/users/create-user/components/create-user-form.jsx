@@ -36,10 +36,6 @@ import { cn } from '~/lib/utils';
 
 const CreateUserForm = () => {
   const navigate = useNavigate();
-  const { mutate: createUser, isPending } = useCreateUser({
-    onSuccess: () => navigate('/admin/manage-users')
-  });
-
   const form = useForm({
     resolver: yupResolver(createUserSchema),
     defaultValues: {
@@ -49,6 +45,10 @@ const CreateUserForm = () => {
       role: '',
       dob: ''
     }
+  });
+
+  const { mutate: createUser, isPending } = useCreateUser({
+    onSuccess: () => form.reset()
   });
 
   const onSubmit = data => {
@@ -104,7 +104,7 @@ const CreateUserForm = () => {
                     <FormLabel>Gender</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className='w-full'>
                           <SelectValue placeholder='Select gender' />
                         </SelectTrigger>
                       </FormControl>
@@ -129,7 +129,7 @@ const CreateUserForm = () => {
                     <FormLabel>Role</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className='w-full'>
                           <SelectValue placeholder='Select role' />
                         </SelectTrigger>
                       </FormControl>
@@ -162,9 +162,11 @@ const CreateUserForm = () => {
                               !field.value && 'text-muted-foreground'
                             )}
                           >
-                            {field.value
-                              ? format(new Date(field.value), 'PPP')
-                              : 'Pick a date'}
+                            {field.value ? (
+                              format(new Date(field.value), 'PPP')
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
                             <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
                           </Button>
                         </FormControl>
@@ -172,15 +174,25 @@ const CreateUserForm = () => {
                       <PopoverContent className='w-auto p-0' align='start'>
                         <Calendar
                           mode='single'
+                          captionLayout='dropdown'
                           selected={
                             field.value ? new Date(field.value) : undefined
                           }
-                          onSelect={date =>
-                            field.onChange(date?.toISOString() || '')
-                          }
+                          onSelect={date => {
+                            field.onChange(
+                              date ? format(date, 'yyyy-MM-dd') : ''
+                            );
+                          }}
                           disabled={date =>
                             date > new Date() || date < new Date('1900-01-01')
                           }
+                          defaultMonth={
+                            field.value
+                              ? new Date(field.value)
+                              : new Date(2000, 0)
+                          }
+                          startMonth={new Date(1900, 0)}
+                          endMonth={new Date()}
                           initialFocus
                         />
                       </PopoverContent>
