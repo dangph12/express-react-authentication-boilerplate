@@ -1,10 +1,9 @@
 import { useTheme } from 'next-themes';
 import { Outlet } from 'react-router';
 
+import Footer from '~/components/footer';
 import Header from '~/components/header';
 import { Toaster } from '~/components/ui/sonner';
-
-import Footer from '../footer';
 
 const RootLayout = () => {
   const { theme } = useTheme();

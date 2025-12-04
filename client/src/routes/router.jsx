@@ -1,11 +1,15 @@
 import { lazy } from 'react';
 import { createBrowserRouter } from 'react-router';
 
+import PrivateRoute from '~/components/private-route';
+
 const AppLayout = lazy(() => import('~/components/layouts/app-layout'));
 const RootLayout = lazy(() => import('~/components/layouts/root-layout'));
 const AuthLayout = lazy(() => import('~/components/layouts/auth-layout'));
 
 const ErrorComponent = lazy(() => import('~/components/error'));
+
+const ProfilePage = lazy(() => import('~/app/profile/page'));
 
 const router = createBrowserRouter([
   {
@@ -26,7 +30,11 @@ const router = createBrowserRouter([
           },
           {
             path: 'profile',
-            Component: lazy(() => import('~/app/profile/page'))
+            Component: () => (
+              <PrivateRoute allowedRoles={['user', 'admin']}>
+                <ProfilePage />
+              </PrivateRoute>
+            )
           }
         ]
       },
