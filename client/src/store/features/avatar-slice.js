@@ -2,14 +2,10 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 import apiClient from '~/lib/api-client';
 
-export const fetchAvatar = createAsyncThunk(
-  'avatar/fetchAvatar',
-  async userId => {
-    if (!userId) return null;
-    const response = await apiClient.get(`/api/users/me`);
-    return response.data.data.avatar;
-  }
-);
+export const fetchAvatar = createAsyncThunk('avatar/fetchAvatar', async () => {
+  const response = await apiClient.get(`/api/users/me`);
+  return response.data.data.avatar;
+});
 
 export const updateAvatar = createAsyncThunk(
   'avatar/updateAvatar',
