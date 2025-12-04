@@ -1,9 +1,9 @@
-export const Role = {
+export const ROLE = Object.freeze({
   USER: 'user',
   ADMIN: 'admin'
-};
+});
 
-export const RoleOption = [
-  { value: Role.USER, label: 'User' },
-  { value: Role.ADMIN, label: 'Admin' }
+export const ROLE_OPTIONS = [
+  { value: ROLE.USER, label: 'User' },
+  { value: ROLE.ADMIN, label: 'Admin' }
 ];

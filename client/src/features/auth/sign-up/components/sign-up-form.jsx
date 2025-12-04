@@ -29,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '~/components/ui/select';
-import { GenderOption } from '~/constants/gender';
+import { GENDER_OPTIONS } from '~/constants/gender';
 import { cn } from '~/lib/utils';
 
 import { signUpSchema } from '../utils/validation';
@@ -217,7 +217,7 @@ const SignUpForm = ({ onSubmit, isLoading }) => {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {GenderOption.map(option => (
+                    {GENDER_OPTIONS.map(option => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>

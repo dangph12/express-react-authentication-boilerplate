@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
-import { Gender } from '~/shared/constants/gender';
+import { GENDER } from '~/shared/constants/gender';
 
 export const signUpRequestSchema = z.object({
   email: z.email('Invalid email address'),
   name: z.string().min(2, 'Name must be at least 2 characters long'),
   avatar: z.file().optional(),
   gender: z
-    .enum(Object.values(Gender), { message: 'Invalid gender' })
+    .enum(Object.values(GENDER), { message: 'Invalid gender' })
     .optional(),
   dob: z.string().optional(),
   password: z.string().min(6, 'Password must be at least 6 characters long')

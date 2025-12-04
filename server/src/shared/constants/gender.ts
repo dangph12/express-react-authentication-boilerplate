@@ -1,5 +1,7 @@
-export enum Gender {
-  MALE = 'male',
-  FEMALE = 'female',
-  OTHER = 'other'
-}
+export const GENDER = {
+  MALE: 'male',
+  FEMALE: 'female',
+  OTHER: 'other'
+} as const;
+
+export type Gender = (typeof GENDER)[keyof typeof GENDER];

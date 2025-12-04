@@ -1,16 +1,16 @@
 import { z } from 'zod';
 
-import { Gender } from '~/shared/constants/gender';
-import { Role } from '~/shared/constants/role';
+import { GENDER } from '~/shared/constants/gender';
+import { ROLE } from '~/shared/constants/role';
 
 export const updateUserRequestSchema = z.object({
   email: z.email('Invalid email address').optional(),
   name: z.string().min(2, 'Name must be at least 2 characters long').optional(),
   avatar: z.file().optional(),
   gender: z
-    .enum(Object.values(Gender), { message: 'Invalid gender' })
+    .enum(Object.values(GENDER), { message: 'Invalid gender' })
     .optional(),
-  role: z.enum(Object.values(Role), { message: 'Invalid role' }).optional(),
+  role: z.enum(Object.values(ROLE), { message: 'Invalid role' }).optional(),
   dob: z.string().optional(),
   isActive: z.enum(['true', 'false']).optional()
 });

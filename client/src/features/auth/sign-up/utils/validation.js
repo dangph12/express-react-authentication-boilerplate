@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 
-import { Gender } from '~/constants/gender';
+import { GENDER } from '~/constants/gender';
 
 export const signUpSchema = yup.object({
   email: yup
@@ -10,7 +10,7 @@ export const signUpSchema = yup.object({
   name: yup.string().min(1, 'Name is required').required('Name is required'),
   gender: yup
     .string()
-    .oneOf([...Object.values(Gender), ''], 'Invalid gender')
+    .oneOf([...Object.values(GENDER), ''], 'Invalid gender')
     .optional(),
   dob: yup.string().optional(),
   password: yup
