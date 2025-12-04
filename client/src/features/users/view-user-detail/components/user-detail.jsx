@@ -6,6 +6,7 @@ import {
   Camera,
   Pencil,
   Save,
+  Trash2,
   X
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
@@ -40,6 +41,7 @@ import {
 import { Spinner } from '~/components/ui/spinner';
 import { GENDER_OPTIONS } from '~/constants/gender';
 import { ROLE_OPTIONS } from '~/constants/role';
+import DeleteUserDialog from '~/features/users/delete-user/components/delete-user-dialog';
 import { useUpdateUser } from '~/features/users/update-user/api/update-user';
 import { updateUserSchema } from '~/features/users/update-user/utils/validation';
 import { useUserDetail } from '~/features/users/view-user-detail/api/view-user-detail';
@@ -65,6 +67,7 @@ const UserDetail = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const form = useForm({
     resolver: yupResolver(updateUserSchema),
@@ -129,7 +132,20 @@ const UserDetail = () => {
     }
   };
 
+  const handleToggleActive = () => {
+    updateUser(
+      { id, data: { isActive: !user.isActive } },
+      {
+        onSuccess: () => {}
+      }
+    );
+  };
+
   const handleBack = () => {
+    navigate('/admin/manage-users');
+  };
+
+  const handleDeleteSuccess = () => {
     navigate('/admin/manage-users');
   };
 
@@ -154,15 +170,8 @@ const UserDetail = () => {
   }
 
   return (
-    <div className='max-w-4xl mx-auto space-y-6'>
-      <div className='flex items-center gap-4'>
-        <Button variant='ghost' size='icon' onClick={handleBack}>
-          <ArrowLeft className='h-4 w-4' />
-        </Button>
-        <h1 className='text-2xl font-bold'>User Detail</h1>
-      </div>
-
-      <div className='flex flex-col items-center gap-4 p-6 bg-card rounded-lg border md:flex-row md:items-center'>
+    <div className='max-w-4xl mx-auto'>
+      <div className='flex flex-col items-center gap-4 p-6 bg-card rounded-lg border mb-6 md:flex-row md:items-center'>
         <div className='relative'>
           <div
             className={cn('relative group', isEditing && 'cursor-pointer')}
@@ -240,10 +249,20 @@ const UserDetail = () => {
               </Button>
             </>
           ) : (
-            <Button variant='outline' size='sm' onClick={handleEdit}>
-              <Pencil className='h-4 w-4 mr-1' />
-              Edit
-            </Button>
+            <>
+              <Button variant='outline' size='sm' onClick={handleEdit}>
+                <Pencil className='h-4 w-4 mr-1' />
+                Edit
+              </Button>
+              <Button
+                variant={user?.isActive ? 'secondary' : 'default'}
+                size='sm'
+                onClick={handleToggleActive}
+                disabled={isUpdating}
+              >
+                {user?.isActive ? 'Deactivate' : 'Activate'}
+              </Button>
+            </>
           )}
         </div>
       </div>
@@ -448,7 +467,29 @@ const UserDetail = () => {
             />
           </form>
         </Form>
+
+        <div className='flex justify-between items-center mt-6 pt-6 border-t'>
+          <Button
+            variant='destructive'
+            size='sm'
+            onClick={() => setDeleteDialogOpen(true)}
+          >
+            <Trash2 className='h-4 w-4 mr-1' />
+            Delete User
+          </Button>
+          <Button variant='outline' size='sm' onClick={handleBack}>
+            <ArrowLeft className='h-4 w-4 mr-1' />
+            Back to Users
+          </Button>
+        </div>
       </div>
+
+      <DeleteUserDialog
+        user={user}
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onSuccess={handleDeleteSuccess}
+      />
     </div>
   );
 };
