@@ -12,14 +12,6 @@ import { DataTableColumnHeader } from '~/components/admin/data-table-column-head
 import { DataTablePagination } from '~/components/admin/data-table-pagination';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle
-} from '~/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
 import {
@@ -40,7 +32,7 @@ import {
 } from '~/components/ui/table';
 import { GENDER_OPTIONS } from '~/constants/gender';
 import { ROLE_OPTIONS } from '~/constants/role';
-import { useDeleteUser } from '~/features/users/delete-user/api/delete-user';
+import DeleteUserDialog from '~/features/users/delete-user/components/delete-user-dialog';
 import { useUsers } from '~/features/users/view-users/api/view-users';
 
 const UsersTable = () => {
@@ -77,19 +69,9 @@ const UsersTable = () => {
     setPagination(prev => ({ ...prev, pageIndex: 0 }));
   };
 
-  const { mutate: deleteUser, isPending: isDeleting } = useDeleteUser({
-    onSuccess: () => setDeleteDialogOpen(false)
-  });
-
   const handleDelete = user => {
     setUserToDelete(user);
     setDeleteDialogOpen(true);
-  };
-
-  const confirmDelete = () => {
-    if (userToDelete) {
-      deleteUser(userToDelete._id);
-    }
   };
 
   const columns = [
@@ -338,32 +320,11 @@ const UsersTable = () => {
 
       <DataTablePagination table={table} loading={isLoading} />
 
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete User</DialogTitle>
-            <DialogDescription>
-              Are you sure you want to delete "{userToDelete?.name}"? This
-              action cannot be undone.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              variant='outline'
-              onClick={() => setDeleteDialogOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant='destructive'
-              onClick={confirmDelete}
-              disabled={isDeleting}
-            >
-              {isDeleting ? 'Deleting...' : 'Delete'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteUserDialog
+        user={userToDelete}
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+      />
     </div>
   );
 };
