@@ -9,11 +9,19 @@ export const clearAuthTokens = () => {
   sessionStorage.removeItem('accessToken');
 };
 
-export const saveAccessToken = accessToken => {
-  const wasInLocalStorage = localStorage.getItem('accessToken');
-  if (wasInLocalStorage !== null) {
-    localStorage.setItem('accessToken', accessToken);
+export const saveAccessToken = (accessToken, isRemember) => {
+  if (isRemember !== undefined) {
+    if (isRemember) {
+      localStorage.setItem('accessToken', accessToken);
+    } else {
+      sessionStorage.setItem('accessToken', accessToken);
+    }
   } else {
-    sessionStorage.setItem('accessToken', accessToken);
+    const wasInLocalStorage = localStorage.getItem('accessToken');
+    if (wasInLocalStorage !== null) {
+      localStorage.setItem('accessToken', accessToken);
+    } else {
+      sessionStorage.setItem('accessToken', accessToken);
+    }
   }
 };

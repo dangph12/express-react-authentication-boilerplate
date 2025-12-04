@@ -1,12 +1,18 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
 
-import apiClient, { AUTH_SESSION_EXPIRED_EVENT } from '~/lib/api-client';
-import { clearAuthTokens, getStoredAccessToken } from '~/lib/auth-tokens';
+import { logout as logoutApi } from '~/features/auth/logout/api/logout';
+import { refreshAccessToken } from '~/features/auth/refresh-access-token/api/refresh-access-token';
+import { AUTH_SESSION_EXPIRED_EVENT } from '~/lib/api-client';
+import {
+  clearAuthTokens,
+  getStoredAccessToken,
+  saveAccessToken
+} from '~/lib/auth-tokens';
 
 export const initializeAuth = createAsyncThunk(
   'auth/initializeAuth',
-  async (_, { dispatch }) => {
+  async () => {
     try {
       const accessToken = getStoredAccessToken();
 
@@ -15,10 +21,13 @@ export const initializeAuth = createAsyncThunk(
       }
 
       const decoded = jwtDecode(accessToken);
-
       const currentTime = Date.now() / 1000;
+
       if (decoded.exp && decoded.exp < currentTime) {
-        return { accessToken, user: decoded, isExpired: true };
+        const { accessToken: newAccessToken } = await refreshAccessToken();
+        saveAccessToken(newAccessToken);
+        const newDecoded = jwtDecode(newAccessToken);
+        return { accessToken: newAccessToken, user: newDecoded };
       }
 
       return { accessToken, user: decoded };
@@ -31,7 +40,7 @@ export const initializeAuth = createAsyncThunk(
 
 export const handleSessionExpired = createAsyncThunk(
   'auth/handleSessionExpired',
-  async (error, { dispatch }) => {
+  async error => {
     clearAuthTokens();
     return { error };
   }
@@ -41,7 +50,7 @@ export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
-      await apiClient.post('/api/auth/logout');
+      await logoutApi();
       return true;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Logout failed');
@@ -65,11 +74,7 @@ export const authSlice = createSlice({
         return;
       }
       try {
-        if (isRemember) {
-          localStorage.setItem('accessToken', accessToken);
-        } else {
-          sessionStorage.setItem('accessToken', accessToken);
-        }
+        saveAccessToken(accessToken, isRemember);
         const decoded = jwtDecode(accessToken);
         state.user = decoded;
         state.sessionExpired = false;
@@ -92,12 +97,6 @@ export const authSlice = createSlice({
         state.loading = false;
         if (action.payload) {
           state.user = action.payload.user;
-          const wasInLocalStorage = localStorage.getItem('accessToken');
-          if (wasInLocalStorage) {
-            localStorage.setItem('accessToken', action.payload.accessToken);
-          } else {
-            sessionStorage.setItem('accessToken', action.payload.accessToken);
-          }
         } else {
           state.user = null;
         }
