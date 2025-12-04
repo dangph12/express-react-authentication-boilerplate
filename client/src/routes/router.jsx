@@ -84,6 +84,12 @@ const router = createBrowserRouter([
           {
             path: 'manage-users/:id',
             Component: lazy(() => import('~/app/admin/manage-users/[id]/page'))
+          },
+          {
+            path: 'manage-users/create-user',
+            Component: lazy(
+              () => import('~/app/admin/manage-users/create-user/page')
+            )
           }
         ]
       }
