@@ -1,7 +1,4 @@
-import {
-  DoubleArrowLeftIcon,
-  DoubleArrowRightIcon
-} from '@radix-ui/react-icons';
+import { ChevronsLeft, ChevronsRight } from 'lucide-react';
 
 import { Button } from '~/components/ui/button';
 import {
@@ -120,7 +117,7 @@ export function DataTablePagination({ table, loading, showSelection = false }) {
                 disabled={!table.getCanPreviousPage() || loading}
               >
                 <span className='sr-only'>Go to first page</span>
-                <DoubleArrowLeftIcon className='h-4 w-4' />
+                <ChevronsLeft className='h-4 w-4' />
               </Button>
             </PaginationItem>
 
@@ -172,7 +169,7 @@ export function DataTablePagination({ table, loading, showSelection = false }) {
                 disabled={!table.getCanNextPage() || loading}
               >
                 <span className='sr-only'>Go to last page</span>
-                <DoubleArrowRightIcon className='h-4 w-4' />
+                <ChevronsRight className='h-4 w-4' />
               </Button>
             </PaginationItem>
           </PaginationContent>

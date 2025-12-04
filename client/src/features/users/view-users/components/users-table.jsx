@@ -5,12 +5,12 @@ import {
 } from '@tanstack/react-table';
 import { Eye, Plus, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 
 import { DataTableColumnHeader } from '~/components/admin/data-table-column-header';
 import { DataTablePagination } from '~/components/admin/data-table-pagination';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
-import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import {
   Dialog,
@@ -20,6 +20,7 @@ import {
   DialogHeader,
   DialogTitle
 } from '~/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
 import {
   MultiSelect,
@@ -44,24 +45,37 @@ import { useUsers } from '~/features/users/view-users/api/view-users';
 
 const UsersTable = () => {
   const navigate = useNavigate();
-  const [searchName, setSearchName] = useState('');
-  const [selectedGenders, setSelectedGenders] = useState([]);
-  const [selectedRoles, setSelectedRoles] = useState([]);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
   const [sorting, setSorting] = useState([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
+  const form = useForm({
+    defaultValues: {
+      name: '',
+      gender: [],
+      role: []
+    }
+  });
+
+  const { submitCount } = form.formState;
+  const filters = form.getValues();
+
   const { data, isLoading } = useUsers({
     page: pagination.pageIndex + 1,
     limit: pagination.pageSize,
-    name: searchName || undefined,
-    gender: selectedGenders.length ? selectedGenders : undefined,
-    role: selectedRoles.length ? selectedRoles : undefined,
+    name: filters.name || undefined,
+    gender: filters.gender.length ? filters.gender : undefined,
+    role: filters.role.length ? filters.role : undefined,
     sort: sorting.length
       ? sorting.map(s => (s.desc ? `-${s.id}` : s.id)).join(',')
-      : '-createdAt'
+      : '-createdAt',
+    _submitCount: submitCount // triggers re-fetch on submit
   });
+
+  const handleSearch = () => {
+    setPagination(prev => ({ ...prev, pageIndex: 0 }));
+  };
 
   const { mutate: deleteUser, isPending: isDeleting } = useDeleteUser({
     onSuccess: () => setDeleteDialogOpen(false)
@@ -86,7 +100,11 @@ const UsersTable = () => {
         <Avatar className='h-10 w-10'>
           <AvatarImage src={row.original.avatar} alt={row.original.name} />
           <AvatarFallback>
-            {row.original.name?.charAt(0).toUpperCase()}
+            <img
+              src='/default-avatar.jpg'
+              alt='Default avatar'
+              className='h-full w-full object-cover'
+            />
           </AvatarFallback>
         </Avatar>
       ),
@@ -110,9 +128,7 @@ const UsersTable = () => {
         <DataTableColumnHeader column={column} title='Gender' />
       ),
       cell: ({ row }) => (
-        <Badge variant='secondary' className='capitalize'>
-          {row.original.gender}
-        </Badge>
+        <span className='capitalize'>{row.original.gender}</span>
       )
     },
     {
@@ -120,14 +136,7 @@ const UsersTable = () => {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title='Role' />
       ),
-      cell: ({ row }) => (
-        <Badge
-          variant={row.original.role === 'admin' ? 'default' : 'secondary'}
-          className='capitalize'
-        >
-          {row.original.role}
-        </Badge>
-      )
+      cell: ({ row }) => <span className='capitalize'>{row.original.role}</span>
     },
     {
       accessorKey: 'isActive',
@@ -135,9 +144,7 @@ const UsersTable = () => {
         <DataTableColumnHeader column={column} title='Status' />
       ),
       cell: ({ row }) => (
-        <Badge variant={row.original.isActive ? 'default' : 'destructive'}>
-          {row.original.isActive ? 'Active' : 'Inactive'}
-        </Badge>
+        <span>{row.original.isActive ? 'Active' : 'Inactive'}</span>
       )
     },
     {
@@ -179,54 +186,100 @@ const UsersTable = () => {
 
   return (
     <div className='space-y-4'>
-      <div className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'>
-        <div className='flex flex-1 items-center gap-4'>
-          <div className='relative w-64'>
-            <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
-            <Input
-              placeholder='Search by name...'
-              value={searchName}
-              onChange={e => setSearchName(e.target.value)}
-              className='pl-8'
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(handleSearch)}
+          className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'
+        >
+          <div className='flex flex-1 items-center gap-4'>
+            <FormField
+              control={form.control}
+              name='name'
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className='relative w-64'>
+                      <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
+                      <Input
+                        placeholder='Search by name...'
+                        className='pl-8'
+                        {...field}
+                      />
+                    </div>
+                  </FormControl>
+                </FormItem>
+              )}
             />
+            <FormField
+              control={form.control}
+              name='gender'
+              render={({ field }) => (
+                <FormItem>
+                  <MultiSelect
+                    values={field.value}
+                    onValuesChange={field.onChange}
+                  >
+                    <MultiSelectTrigger className='w-40'>
+                      <MultiSelectValue placeholder='Gender' />
+                    </MultiSelectTrigger>
+                    <MultiSelectContent>
+                      <MultiSelectGroup>
+                        {GENDER_OPTIONS.map(option => (
+                          <MultiSelectItem
+                            key={option.value}
+                            value={option.value}
+                          >
+                            {option.label}
+                          </MultiSelectItem>
+                        ))}
+                      </MultiSelectGroup>
+                    </MultiSelectContent>
+                  </MultiSelect>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='role'
+              render={({ field }) => (
+                <FormItem>
+                  <MultiSelect
+                    values={field.value}
+                    onValuesChange={field.onChange}
+                  >
+                    <MultiSelectTrigger className='w-40'>
+                      <MultiSelectValue placeholder='Role' />
+                    </MultiSelectTrigger>
+                    <MultiSelectContent>
+                      <MultiSelectGroup>
+                        {ROLE_OPTIONS.map(option => (
+                          <MultiSelectItem
+                            key={option.value}
+                            value={option.value}
+                          >
+                            {option.label}
+                          </MultiSelectItem>
+                        ))}
+                      </MultiSelectGroup>
+                    </MultiSelectContent>
+                  </MultiSelect>
+                </FormItem>
+              )}
+            />
+            <Button type='submit'>
+              <Search className='mr-2 h-4 w-4' />
+              Search
+            </Button>
           </div>
-          <MultiSelect
-            values={selectedGenders}
-            onValuesChange={setSelectedGenders}
+          <Button
+            type='button'
+            onClick={() => navigate('/admin/manage-users/create-user')}
           >
-            <MultiSelectTrigger className='w-40'>
-              <MultiSelectValue placeholder='Gender' />
-            </MultiSelectTrigger>
-            <MultiSelectContent>
-              <MultiSelectGroup>
-                {GENDER_OPTIONS.map(option => (
-                  <MultiSelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MultiSelectItem>
-                ))}
-              </MultiSelectGroup>
-            </MultiSelectContent>
-          </MultiSelect>
-          <MultiSelect values={selectedRoles} onValuesChange={setSelectedRoles}>
-            <MultiSelectTrigger className='w-40'>
-              <MultiSelectValue placeholder='Role' />
-            </MultiSelectTrigger>
-            <MultiSelectContent>
-              <MultiSelectGroup>
-                {ROLE_OPTIONS.map(option => (
-                  <MultiSelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </MultiSelectItem>
-                ))}
-              </MultiSelectGroup>
-            </MultiSelectContent>
-          </MultiSelect>
-        </div>
-        <Button onClick={() => navigate('/admin/manage-users/create-user')}>
-          <Plus className='mr-2 h-4 w-4' />
-          Create User
-        </Button>
-      </div>
+            <Plus className='mr-2 h-4 w-4' />
+            Create User
+          </Button>
+        </form>
+      </Form>
 
       <div className='rounded-md border'>
         <Table>

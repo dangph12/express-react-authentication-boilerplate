@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import apiClient from '~/lib/api-client';
 import { QUERY_KEYS } from '~/lib/query-keys';
 
-const fetchUsers = async (params = {}) => {
+const fetchUsers = async params => {
   const searchParams = new URLSearchParams();
 
   if (params.page) searchParams.set('page', params.page);
@@ -22,8 +22,10 @@ const fetchUsers = async (params = {}) => {
 };
 
 export const useUsers = (params = {}) => {
+  const { _submitCount, ...queryParams } = params;
+
   return useQuery({
     queryKey: [...QUERY_KEYS.USERS, params],
-    queryFn: () => fetchUsers(params)
+    queryFn: () => fetchUsers(queryParams)
   });
 };
