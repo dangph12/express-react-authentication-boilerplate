@@ -11,6 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger
 } from '~/components/ui/popover';
+import { useProfile } from '~/features/users/view-profile/api/view-profile';
 import { logout } from '~/store/features/auth-slice';
 
 const NAV_LINKS = [
@@ -22,7 +23,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector(state => state.auth);
-  const { url: avatarUrl } = useSelector(state => state.avatar);
+  const { data: profile } = useProfile();
   const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -31,20 +32,8 @@ const Header = () => {
   };
 
   const handleLogout = async () => {
-    await dispatch(logout());
+    dispatch(logout());
     navigate('/');
-  };
-
-  const getInitials = () => {
-    if (user?.fullName) {
-      return user.fullName
-        .split(' ')
-        .map(n => n[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2);
-    }
-    return 'U';
   };
 
   return (
@@ -87,8 +76,14 @@ const Header = () => {
                   className='relative h-10 w-10 rounded-full p-0 cursor-pointer'
                 >
                   <Avatar className='h-10 w-10'>
-                    <AvatarImage src={avatarUrl} alt={user?.fullName} />
-                    <AvatarFallback>{getInitials()}</AvatarFallback>
+                    <AvatarImage src={profile?.avatar} alt={profile?.name} />
+                    <AvatarFallback>
+                      <img
+                        src='/default-avatar.jpg'
+                        alt='Default avatar'
+                        className='h-full w-full object-cover'
+                      />
+                    </AvatarFallback>
                   </Avatar>
                   <span className='absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full border-2 border-background bg-muted'>
                     <ChevronDown className='h-3 w-3' />
