@@ -6,6 +6,7 @@ import PrivateRoute from '~/components/private-route';
 const AppLayout = lazy(() => import('~/components/layouts/app-layout'));
 const RootLayout = lazy(() => import('~/components/layouts/root-layout'));
 const AuthLayout = lazy(() => import('~/components/layouts/auth-layout'));
+const AdminLayout = lazy(() => import('~/components/layouts/admin-layout'));
 
 const ErrorComponent = lazy(() => import('~/components/error'));
 
@@ -61,6 +62,20 @@ const router = createBrowserRouter([
           {
             path: 'reset-password',
             Component: lazy(() => import('~/app/auth/reset-password/page'))
+          }
+        ]
+      },
+      {
+        path: '/admin/',
+        Component: () => (
+          <PrivateRoute allowedRoles={['admin']}>
+            <AdminLayout />
+          </PrivateRoute>
+        ),
+        children: [
+          {
+            path: '',
+            Component: lazy(() => import('~/app/admin/page'))
           }
         ]
       }

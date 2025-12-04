@@ -1,4 +1,3 @@
-'use client';
 import { CheckIcon, ChevronsUpDownIcon, XIcon } from 'lucide-react';
 import {
   createContext,
