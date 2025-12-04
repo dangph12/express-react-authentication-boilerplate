@@ -17,9 +17,10 @@ export const ResetPasswordController = {
       );
   },
   resetPassword: async (req: Request, res: Response) => {
-    const { token } = req.params;
+    const { token } = req.query;
     const { password } = req.body;
-    await ResetPasswordService.resetPassword(token, password);
+
+    await ResetPasswordService.resetPassword(token as string, password);
 
     res
       .status(200)

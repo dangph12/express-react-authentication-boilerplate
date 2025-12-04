@@ -63,12 +63,14 @@ export const ResetPasswordService = {
         user: user._id,
         provider: 'local',
         providerId: user.email,
-        localPassword: hashedPassword
+        localPassword: hashedPassword,
+        lastResetPasswordToken: token
       });
       return;
     }
 
     auth.localPassword = hashedPassword;
+    auth.lastResetPasswordToken = token;
     await auth.save();
   }
 };
