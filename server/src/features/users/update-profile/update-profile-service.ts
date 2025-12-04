@@ -32,9 +32,8 @@ export const UpdateProfileService = {
         updatedUser._id.toString()
       );
       if (uploadResult.success && uploadResult.data) {
-        await updatedUser.updateOne({
-          avatar: uploadResult.data.secure_url
-        });
+        updatedUser.avatar = uploadResult.data.secure_url;
+        await updatedUser.save();
       } else {
         throw createHttpError(500, 'Failed to upload avatar');
       }
