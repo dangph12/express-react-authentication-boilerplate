@@ -5,6 +5,11 @@ import {
   refreshAccessToken,
   requiresReAuthentication
 } from '~/features/auth/refresh-access-token/api/refresh-access-token';
+import {
+  clearAuthTokens,
+  getStoredAccessToken,
+  saveAccessToken
+} from '~/lib/auth-tokens';
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -25,20 +30,6 @@ const dispatchSessionExpired = error => {
   );
 };
 
-const clearAuthTokens = () => {
-  localStorage.removeItem('accessToken');
-  sessionStorage.removeItem('accessToken');
-};
-
-const saveAccessToken = accessToken => {
-  const wasInLocalStorage = localStorage.getItem('accessToken');
-  if (wasInLocalStorage !== null) {
-    localStorage.setItem('accessToken', accessToken);
-  } else {
-    sessionStorage.setItem('accessToken', accessToken);
-  }
-};
-
 const processQueue = (error, token = null) => {
   failedQueue.forEach(({ resolve, reject }) => {
     if (error) {
@@ -52,9 +43,7 @@ const processQueue = (error, token = null) => {
 
 apiClient.interceptors.request.use(
   config => {
-    const token =
-      localStorage.getItem('accessToken') ||
-      sessionStorage.getItem('accessToken');
+    const token = getStoredAccessToken();
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
     }

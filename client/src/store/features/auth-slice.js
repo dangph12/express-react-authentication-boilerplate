@@ -2,17 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { jwtDecode } from 'jwt-decode';
 
 import apiClient, { AUTH_SESSION_EXPIRED_EVENT } from '~/lib/api-client';
-
-const clearAuthTokens = () => {
-  localStorage.removeItem('accessToken');
-  sessionStorage.removeItem('accessToken');
-};
-
-const getStoredAccessToken = () => {
-  return (
-    localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')
-  );
-};
+import { clearAuthTokens, getStoredAccessToken } from '~/lib/auth-tokens';
 
 export const initializeAuth = createAsyncThunk(
   'auth/initializeAuth',
@@ -39,6 +29,14 @@ export const initializeAuth = createAsyncThunk(
   }
 );
 
+export const handleSessionExpired = createAsyncThunk(
+  'auth/handleSessionExpired',
+  async (error, { dispatch }) => {
+    clearAuthTokens();
+    return { error };
+  }
+);
+
 export const logout = createAsyncThunk(
   'auth/logout',
   async (_, { rejectWithValue }) => {
@@ -48,14 +46,6 @@ export const logout = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Logout failed');
     }
-  }
-);
-
-export const handleSessionExpired = createAsyncThunk(
-  'auth/handleSessionExpired',
-  async (error, { dispatch }) => {
-    clearAuthTokens();
-    return { error };
   }
 );
 
@@ -117,6 +107,12 @@ export const authSlice = createSlice({
         state.error = action.payload;
         state.user = null;
       })
+      .addCase(handleSessionExpired.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = null;
+        state.sessionExpired = true;
+        state.error = action.payload?.error?.message || 'Session expired';
+      })
       .addCase(logout.pending, state => {
         state.loading = true;
       })
@@ -133,12 +129,6 @@ export const authSlice = createSlice({
         state.error = null;
         state.sessionExpired = false;
         clearAuthTokens();
-      })
-      .addCase(handleSessionExpired.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = null;
-        state.sessionExpired = true;
-        state.error = action.payload?.error?.message || 'Session expired';
       });
   }
 });
