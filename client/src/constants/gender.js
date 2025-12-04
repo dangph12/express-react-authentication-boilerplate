@@ -4,7 +4,7 @@ export const Gender = {
   OTHER: 'other'
 };
 
-export const GENDER_OPTIONS = [
+export const GenderOption = [
   { value: Gender.MALE, label: 'Male' },
   { value: Gender.FEMALE, label: 'Female' },
   { value: Gender.OTHER, label: 'Other' }
