@@ -4,6 +4,8 @@ import { Outlet } from 'react-router';
 import Header from '~/components/header';
 import { Toaster } from '~/components/ui/sonner';
 
+import Footer from '../footer';
+
 const RootLayout = () => {
   const { theme } = useTheme();
 
@@ -14,6 +16,7 @@ const RootLayout = () => {
         <Outlet />
       </main>
       <Toaster position='top-right' theme={theme} />
+      <Footer />
     </div>
   );
 };

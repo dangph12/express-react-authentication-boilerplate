@@ -38,11 +38,14 @@ export const uploadMultiple = (
   return createUpload(options).array(fieldName, maxCount);
 };
 
-export const uploadSingleImage = (fieldName: string) => {
+export const handleSingleImageUpload = (fieldName: string) => {
   return uploadSingle(fieldName, { fileFilter: imageFileFilter });
 };
 
-export const uploadMultipleImages = (fieldName: string, maxCount: number) => {
+export const handleMultipleImagesUpload = (
+  fieldName: string,
+  maxCount: number
+) => {
   return uploadMultiple(fieldName, maxCount, { fileFilter: imageFileFilter });
 };
 
