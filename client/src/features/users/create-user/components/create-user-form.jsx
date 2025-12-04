@@ -69,7 +69,9 @@ const CreateUserForm = () => {
                 name='name'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>
+                      Name <span className='text-destructive'>*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input placeholder='Enter name' {...field} />
                     </FormControl>
@@ -83,7 +85,9 @@ const CreateUserForm = () => {
                 name='email'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>
+                      Email <span className='text-destructive'>*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type='email'
@@ -101,7 +105,9 @@ const CreateUserForm = () => {
                 name='gender'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Gender</FormLabel>
+                    <FormLabel>
+                      Gender <span className='text-destructive'>*</span>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className='w-full'>
@@ -126,7 +132,9 @@ const CreateUserForm = () => {
                 name='role'
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Role</FormLabel>
+                    <FormLabel>
+                      Role <span className='text-destructive'>*</span>
+                    </FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
                         <SelectTrigger className='w-full'>
