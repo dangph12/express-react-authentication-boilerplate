@@ -2,7 +2,7 @@ import { ChevronDown, LogOut, Menu, Moon, Sun, User, X } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router';
+import { Link, NavLink, useNavigate } from 'react-router';
 
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
@@ -12,6 +12,7 @@ import {
   PopoverTrigger
 } from '~/components/ui/popover';
 import { useProfile } from '~/features/users/view-profile/api/view-profile';
+import { cn } from '~/lib/utils';
 import { logout } from '~/store/features/auth-slice';
 
 const NAV_LINKS = [
@@ -44,15 +45,24 @@ const Header = () => {
           <span className='hidden font-semibold sm:inline-block'>Vite App</span>
         </Link>
 
-        <nav className='hidden items-center gap-6 md:flex'>
+        <nav className='hidden items-center gap-6 md:flex h-full'>
           {NAV_LINKS.map(link => (
-            <Link
+            <NavLink
               key={link.to}
               to={link.to}
-              className='text-sm font-medium text-muted-foreground transition-colors hover:text-foreground'
+              className={({ isActive }) =>
+                cn(
+                  'relative h-full flex items-center text-sm font-medium transition-colors hover:text-foreground',
+                  'after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-foreground',
+                  'after:origin-center after:scale-x-0 after:transition-transform hover:after:scale-x-100',
+                  isActive
+                    ? 'text-foreground after:scale-x-100'
+                    : 'text-muted-foreground'
+                )
+              }
             >
               {link.label}
-            </Link>
+            </NavLink>
           ))}
         </nav>
 
@@ -140,14 +150,20 @@ const Header = () => {
         <nav className='border-t md:hidden'>
           <div className='container mx-auto flex flex-col px-4 py-2'>
             {NAV_LINKS.map(link => (
-              <Link
+              <NavLink
                 key={link.to}
                 to={link.to}
-                className='rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground'
+                className={({ isActive }) =>
+                  `rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-foreground ${
+                    isActive
+                      ? 'bg-accent text-foreground'
+                      : 'text-muted-foreground'
+                  }`
+                }
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {link.label}
-              </Link>
+              </NavLink>
             ))}
           </div>
         </nav>
