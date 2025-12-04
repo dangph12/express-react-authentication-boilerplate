@@ -1,9 +1,9 @@
-import { ChevronDown, LogOut, Menu, Moon, Sun, User, X } from 'lucide-react';
-import { useTheme } from 'next-themes';
-import { useState } from 'react';
+import { ChevronDown, LogOut, Menu, User, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, NavLink, useNavigate } from 'react-router';
 
+import { ModeToggle } from '~/components/mode-toggle';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
 import {
@@ -12,6 +12,7 @@ import {
   PopoverTrigger
 } from '~/components/ui/popover';
 import { useProfile } from '~/features/users/view-profile/api/view-profile';
+import { useIsMobile } from '~/hooks/use-mobile';
 import { cn } from '~/lib/utils';
 import { logout } from '~/store/features/auth-slice';
 
@@ -23,14 +24,16 @@ const NAV_LINKS = [
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const { user } = useSelector(state => state.auth);
   const { data: profile } = useProfile();
-  const { theme, setTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
+  useEffect(() => {
+    if (!isMobile) {
+      setMobileMenuOpen(false);
+    }
+  }, [isMobile]);
 
   const handleLogout = async () => {
     dispatch(logout());
@@ -67,16 +70,7 @@ const Header = () => {
         </nav>
 
         <div className='flex items-center gap-2'>
-          <Button
-            variant='ghost'
-            size='icon'
-            onClick={toggleTheme}
-            className='cursor-pointer'
-          >
-            <Sun className='h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0' />
-            <Moon className='absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100' />
-            <span className='sr-only'>Toggle theme</span>
-          </Button>
+          <ModeToggle />
 
           {user ? (
             <Popover>
