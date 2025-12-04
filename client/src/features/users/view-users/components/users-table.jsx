@@ -167,20 +167,17 @@ const UsersTable = () => {
   });
 
   return (
-    <div className='space-y-4'>
+    <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(handleSearch)}
-          className='flex flex-col gap-4 md:flex-row md:items-center md:justify-between'
-        >
-          <div className='flex flex-1 items-center gap-4'>
+        <form onSubmit={form.handleSubmit(handleSearch)} className='space-y-4'>
+          <div className='flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center'>
             <FormField
               control={form.control}
               name='name'
               render={({ field }) => (
-                <FormItem>
+                <FormItem className='flex-1 min-w-[200px]'>
                   <FormControl>
-                    <div className='relative w-64'>
+                    <div className='relative'>
                       <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
                       <Input
                         placeholder='Search by name...'
@@ -201,7 +198,7 @@ const UsersTable = () => {
                     values={field.value}
                     onValuesChange={field.onChange}
                   >
-                    <MultiSelectTrigger className='w-40'>
+                    <MultiSelectTrigger className='w-full sm:w-40'>
                       <MultiSelectValue placeholder='Gender' />
                     </MultiSelectTrigger>
                     <MultiSelectContent>
@@ -229,7 +226,7 @@ const UsersTable = () => {
                     values={field.value}
                     onValuesChange={field.onChange}
                   >
-                    <MultiSelectTrigger className='w-40'>
+                    <MultiSelectTrigger className='w-full sm:w-40'>
                       <MultiSelectValue placeholder='Role' />
                     </MultiSelectTrigger>
                     <MultiSelectContent>
@@ -252,14 +249,15 @@ const UsersTable = () => {
               <Search className='mr-2 h-4 w-4' />
               Search
             </Button>
+            <Button
+              type='button'
+              onClick={() => navigate('/admin/manage-users/create-user')}
+              className='sm:ml-auto'
+            >
+              <Plus className='mr-2 h-4 w-4' />
+              Create User
+            </Button>
           </div>
-          <Button
-            type='button'
-            onClick={() => navigate('/admin/manage-users/create-user')}
-          >
-            <Plus className='mr-2 h-4 w-4' />
-            Create User
-          </Button>
         </form>
       </Form>
 
@@ -325,7 +323,7 @@ const UsersTable = () => {
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
       />
-    </div>
+    </>
   );
 };
 

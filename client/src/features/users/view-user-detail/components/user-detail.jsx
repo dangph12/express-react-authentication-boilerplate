@@ -3,13 +3,12 @@ import { format } from 'date-fns';
 import {
   ArrowLeft,
   Calendar as CalendarIcon,
-  Camera,
   Pencil,
   Save,
   Trash2,
   X
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router';
 
@@ -41,6 +40,7 @@ import {
 import { Spinner } from '~/components/ui/spinner';
 import { GENDER_OPTIONS } from '~/constants/gender';
 import { ROLE_OPTIONS } from '~/constants/role';
+import { STATUS_OPTIONS } from '~/constants/status';
 import DeleteUserDialog from '~/features/users/delete-user/components/delete-user-dialog';
 import { useUpdateUser } from '~/features/users/update-user/api/update-user';
 import { updateUserSchema } from '~/features/users/update-user/utils/validation';
@@ -52,21 +52,14 @@ import {
 } from '~/features/users/view-user-detail/utils/utils';
 import { cn } from '~/lib/utils';
 
-const IS_ACTIVE_OPTIONS = [
-  { value: 'true', label: 'Active' },
-  { value: 'false', label: 'Inactive' }
-];
-
 const UserDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const fileInputRef = useRef(null);
 
   const { data: user, isLoading } = useUserDetail(id);
   const { mutate: updateUser, isPending: isUpdating } = useUpdateUser();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [avatarPreview, setAvatarPreview] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const form = useForm({
@@ -77,32 +70,26 @@ const UserDetail = () => {
       gender: '',
       role: '',
       dob: '',
-      isActive: '',
-      avatar: undefined
+      isActive: ''
     }
   });
 
-  useEffect(() => {
-    if (isEditing && user) {
+  const handleEdit = () => {
+    if (user) {
       form.reset({
         email: user.email || '',
         name: user.name || '',
         gender: user.gender || '',
         role: user.role || '',
         dob: user.dob ? user.dob.split('T')[0] : '',
-        isActive: user.isActive?.toString() || 'true',
-        avatar: undefined
+        isActive: user.isActive?.toString() || 'true'
       });
     }
-  }, [isEditing, user, form]);
-
-  const handleEdit = () => {
     setIsEditing(true);
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setAvatarPreview(null);
     form.reset();
   };
 
@@ -112,24 +99,9 @@ const UserDetail = () => {
       {
         onSuccess: () => {
           setIsEditing(false);
-          setAvatarPreview(null);
         }
       }
     );
-  };
-
-  const handleAvatarClick = () => {
-    if (isEditing) {
-      fileInputRef.current?.click();
-    }
-  };
-
-  const handleAvatarChange = e => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setAvatarPreview(URL.createObjectURL(file));
-      form.setValue('avatar', file);
-    }
   };
 
   const handleToggleActive = () => {
@@ -171,44 +143,22 @@ const UserDetail = () => {
 
   return (
     <div className='max-w-4xl mx-auto'>
+      <Button variant='ghost' size='sm' onClick={handleBack} className='mb-4'>
+        <ArrowLeft className='h-4 w-4 mr-1' />
+        Back to Users
+      </Button>
+
       <div className='flex flex-col items-center gap-4 p-6 bg-card rounded-lg border mb-6 md:flex-row md:items-center'>
-        <div className='relative'>
-          <div
-            className={cn('relative group', isEditing && 'cursor-pointer')}
-            onClick={handleAvatarClick}
-          >
-            <Avatar className='h-24 w-24'>
-              <AvatarImage
-                src={avatarPreview || user?.avatar}
-                alt={user?.name}
-              />
-              <AvatarFallback>
-                <img
-                  src='/default-avatar.jpg'
-                  alt='Default avatar'
-                  className='h-full w-full object-cover'
-                />
-              </AvatarFallback>
-            </Avatar>
-            {isEditing && (
-              <div className='absolute -bottom-1 -right-1 h-7 w-7 rounded-full bg-muted border-2 border-background flex items-center justify-center'>
-                <Camera className='h-3.5 w-3.5' />
-              </div>
-            )}
-          </div>
-          <input
-            ref={fileInputRef}
-            type='file'
-            accept='image/*'
-            className='hidden'
-            onChange={handleAvatarChange}
-          />
-          {isUpdating && (
-            <div className='absolute inset-0 flex items-center justify-center bg-black/50 rounded-full'>
-              <Spinner className='text-white' />
-            </div>
-          )}
-        </div>
+        <Avatar className='h-24 w-24'>
+          <AvatarImage src={user?.avatar} alt={user?.name} />
+          <AvatarFallback>
+            <img
+              src='/default-avatar.jpg'
+              alt='Default avatar'
+              className='h-full w-full object-cover'
+            />
+          </AvatarFallback>
+        </Avatar>
 
         <div className='flex-1 text-center md:text-left'>
           <div className='flex items-center justify-center md:justify-start gap-2'>
@@ -449,7 +399,7 @@ const UserDetail = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {IS_ACTIVE_OPTIONS.map(option => (
+                        {STATUS_OPTIONS.map(option => (
                           <SelectItem key={option.value} value={option.value}>
                             {option.label}
                           </SelectItem>
@@ -468,7 +418,7 @@ const UserDetail = () => {
           </form>
         </Form>
 
-        <div className='flex justify-between items-center mt-6 pt-6 border-t'>
+        <div className='flex justify-start items-center mt-6 pt-6 border-t'>
           <Button
             variant='destructive'
             size='sm'
@@ -476,10 +426,6 @@ const UserDetail = () => {
           >
             <Trash2 className='h-4 w-4 mr-1' />
             Delete User
-          </Button>
-          <Button variant='outline' size='sm' onClick={handleBack}>
-            <ArrowLeft className='h-4 w-4 mr-1' />
-            Back to Users
           </Button>
         </div>
       </div>

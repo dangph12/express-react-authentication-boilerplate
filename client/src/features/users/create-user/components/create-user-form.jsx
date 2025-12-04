@@ -1,12 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
+import { ArrowLeft, CalendarIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 
 import { Button } from '~/components/ui/button';
 import { Calendar } from '~/components/ui/calendar';
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import {
   Form,
   FormControl,
@@ -56,14 +55,22 @@ const CreateUserForm = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Create New User</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <div className='max-w-4xl mx-auto'>
+      <Button
+        variant='ghost'
+        size='sm'
+        onClick={() => navigate('/admin/manage-users')}
+        className='mb-4'
+      >
+        <ArrowLeft className='h-4 w-4 mr-1' />
+        Back to Users
+      </Button>
+
+      <div className='bg-card rounded-lg border p-6'>
+        <h2 className='text-lg font-semibold mb-4'>Create New User</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
-            <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+            <div className='grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6'>
               <FormField
                 control={form.control}
                 name='name'
@@ -211,7 +218,7 @@ const CreateUserForm = () => {
               />
             </div>
 
-            <div className='flex justify-end gap-4'>
+            <div className='flex justify-end gap-4 pt-6 border-t'>
               <Button
                 type='button'
                 variant='outline'
@@ -225,8 +232,8 @@ const CreateUserForm = () => {
             </div>
           </form>
         </Form>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 
