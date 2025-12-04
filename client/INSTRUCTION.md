@@ -172,6 +172,51 @@ const { data: profile, isLoading } = useProfile();
 const updateMutation = useUpdateProfile();
 ```
 
+### Query Keys (Centralized)
+
+**All React Query keys MUST be defined in `~/lib/query-keys.js`.**
+
+```javascript
+// ~/lib/query-keys.js
+export const QUERY_KEYS = {
+  PROFILE: ['profile'],
+  USERS: ['users'],
+  USER: id => ['user', id]
+};
+```
+
+#### Usage:
+
+```javascript
+// ✅ Correct - Use centralized query keys
+import { QUERY_KEYS } from '~/lib/query-keys';
+
+export const useProfile = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.PROFILE,
+    queryFn: fetchProfile
+  });
+};
+
+// For dynamic keys
+export const useUser = id => {
+  return useQuery({
+    queryKey: QUERY_KEYS.USER(id),
+    queryFn: () => fetchUser(id)
+  });
+};
+
+// ❌ Wrong - Don't define query keys in feature files
+const PROFILE_QUERY_KEY = ['profile']; // Don't do this
+```
+
+#### Key Points:
+
+1. **Single source of truth** - All keys in one file
+2. **Easy cache invalidation** - Import and use consistently
+3. **Prevents typos** - No hardcoded strings scattered around
+4. **Dynamic keys use functions** - `USER: id => ['user', id]`
+
 ### Page Files (Composition Only)
 
 **Page files (`page.jsx`) should ONLY compose and arrange components. No business logic.**

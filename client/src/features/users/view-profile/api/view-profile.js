@@ -1,8 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import apiClient from '~/lib/api-client';
-
-export const PROFILE_QUERY_KEY = ['profile'];
+import { QUERY_KEYS } from '~/lib/query-keys';
 
 const fetchProfile = async () => {
   const response = await apiClient.get('/api/users/me');
@@ -11,7 +10,7 @@ const fetchProfile = async () => {
 
 export const useProfile = () => {
   return useQuery({
-    queryKey: PROFILE_QUERY_KEY,
+    queryKey: QUERY_KEYS.PROFILE,
     queryFn: fetchProfile
   });
 };

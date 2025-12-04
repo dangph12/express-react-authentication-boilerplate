@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
-import { PROFILE_QUERY_KEY } from '~/features/users/view-profile/api/view-profile';
 import apiClient from '~/lib/api-client';
+import { QUERY_KEYS } from '~/lib/query-keys';
 
 const updateProfile = async data => {
   const formData = new FormData();
@@ -31,7 +31,7 @@ export const useUpdateProfile = () => {
   return useMutation({
     mutationFn: updateProfile,
     onSuccess: data => {
-      queryClient.setQueryData(PROFILE_QUERY_KEY, data);
+      queryClient.setQueryData(QUERY_KEYS.PROFILE, data);
       toast.success('Profile updated successfully');
     },
     onError: error => {
