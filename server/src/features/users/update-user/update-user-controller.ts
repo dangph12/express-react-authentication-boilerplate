@@ -10,6 +10,14 @@ export const UpdateUserController = {
 
     const data = req.body;
 
+    const currentUserId = req.user?._id.toString();
+
+    if (id === currentUserId && data.isActive === 'false') {
+      return res
+        .status(400)
+        .json(ApiResponse.failed('Admin cannot deactivate own account'));
+    }
+
     const result = await UpdateUserService.updateUser(id, data);
 
     res
