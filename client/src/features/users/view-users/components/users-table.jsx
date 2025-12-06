@@ -3,25 +3,14 @@ import {
   getCoreRowModel,
   useReactTable
 } from '@tanstack/react-table';
-import { Eye, Plus, Search, Trash2 } from 'lucide-react';
+import { Eye, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 
 import { DataTableColumnHeader } from '~/components/admin/data-table-column-header';
 import { DataTablePagination } from '~/components/admin/data-table-pagination';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
-import { Form, FormControl, FormField, FormItem } from '~/components/ui/form';
-import { Input } from '~/components/ui/input';
-import {
-  MultiSelect,
-  MultiSelectContent,
-  MultiSelectGroup,
-  MultiSelectItem,
-  MultiSelectTrigger,
-  MultiSelectValue
-} from '~/components/ui/multi-select';
 import {
   Table,
   TableBody,
@@ -30,43 +19,61 @@ import {
   TableHeader,
   TableRow
 } from '~/components/ui/table';
-import { GENDER_OPTIONS } from '~/constants/gender';
-import { ROLE_OPTIONS } from '~/constants/role';
 import DeleteUserDialog from '~/features/users/delete-user/components/delete-user-dialog';
 import { useUsers } from '~/features/users/view-users/api/view-users';
 
 const UsersTable = () => {
   const navigate = useNavigate();
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const [sorting, setSorting] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
 
-  const form = useForm({
-    defaultValues: {
-      name: '',
-      gender: [],
-      role: []
-    }
-  });
-
-  const { submitCount } = form.formState;
-  const filters = form.getValues();
+  const page = parseInt(searchParams.get('page') || '1');
+  const limit = parseInt(searchParams.get('limit') || '10');
+  const sort = searchParams.get('sort') || '-createdAt';
+  const name = searchParams.get('name') || undefined;
+  const gender = searchParams.getAll('gender').length
+    ? searchParams.getAll('gender')
+    : undefined;
+  const role = searchParams.getAll('role').length
+    ? searchParams.getAll('role')
+    : undefined;
 
   const { data, isLoading } = useUsers({
-    page: pagination.pageIndex + 1,
-    limit: pagination.pageSize,
-    name: filters.name || undefined,
-    gender: filters.gender.length ? filters.gender : undefined,
-    role: filters.role.length ? filters.role : undefined,
-    sort: sorting.length
-      ? sorting.map(s => (s.desc ? `-${s.id}` : s.id)).join(',')
-      : '-createdAt',
-    _submitCount: submitCount // triggers re-fetch on submit
+    page,
+    limit,
+    sort,
+    name,
+    gender,
+    role
   });
 
-  const handleSearch = () => {
-    setPagination(prev => ({ ...prev, pageIndex: 0 }));
+  const parseSorting = sortString => {
+    if (!sortString) return [];
+    return sortString.split(',').map(s => {
+      const desc = s.startsWith('-');
+      const id = desc ? s.slice(1) : s;
+      return { id, desc };
+    });
+  };
+
+  const sorting = parseSorting(sort);
+
+  const handleSortingChange = updater => {
+    const newSorting =
+      typeof updater === 'function' ? updater(sorting) : updater;
+
+    const newParams = new URLSearchParams(searchParams);
+    if (newSorting.length) {
+      const sortString = newSorting
+        .map(s => (s.desc ? `-${s.id}` : s.id))
+        .join(',');
+      newParams.set('sort', sortString);
+    } else {
+      newParams.set('sort', '-createdAt');
+    }
+
+    setSearchParams(newParams);
   };
 
   const handleDelete = user => {
@@ -154,13 +161,35 @@ const UsersTable = () => {
     }
   ];
 
+  const handlePaginationChange = updater => {
+    const currentPagination = {
+      pageIndex: page - 1,
+      pageSize: limit
+    };
+
+    const newPagination =
+      typeof updater === 'function' ? updater(currentPagination) : updater;
+
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('page', (newPagination.pageIndex + 1).toString());
+    newParams.set('limit', newPagination.pageSize.toString());
+
+    setSearchParams(newParams);
+  };
+
   const table = useReactTable({
     data: data?.docs || [],
     columns,
     pageCount: data?.totalPages || 0,
-    state: { pagination, sorting },
-    onPaginationChange: setPagination,
-    onSortingChange: setSorting,
+    state: {
+      pagination: {
+        pageIndex: page - 1,
+        pageSize: limit
+      },
+      sorting
+    },
+    onPaginationChange: handlePaginationChange,
+    onSortingChange: handleSortingChange,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     manualSorting: true
@@ -168,99 +197,6 @@ const UsersTable = () => {
 
   return (
     <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSearch)} className='space-y-4'>
-          <div className='flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center'>
-            <FormField
-              control={form.control}
-              name='name'
-              render={({ field }) => (
-                <FormItem className='w-full sm:w-64'>
-                  <FormControl>
-                    <div className='relative'>
-                      <Search className='absolute left-2 top-2.5 h-4 w-4 text-muted-foreground' />
-                      <Input
-                        placeholder='Search by name...'
-                        className='pl-8'
-                        {...field}
-                      />
-                    </div>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='gender'
-              render={({ field }) => (
-                <FormItem>
-                  <MultiSelect
-                    values={field.value}
-                    onValuesChange={field.onChange}
-                  >
-                    <MultiSelectTrigger className='w-full sm:w-40'>
-                      <MultiSelectValue placeholder='Gender' />
-                    </MultiSelectTrigger>
-                    <MultiSelectContent>
-                      <MultiSelectGroup>
-                        {GENDER_OPTIONS.map(option => (
-                          <MultiSelectItem
-                            key={option.value}
-                            value={option.value}
-                          >
-                            {option.label}
-                          </MultiSelectItem>
-                        ))}
-                      </MultiSelectGroup>
-                    </MultiSelectContent>
-                  </MultiSelect>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='role'
-              render={({ field }) => (
-                <FormItem>
-                  <MultiSelect
-                    values={field.value}
-                    onValuesChange={field.onChange}
-                  >
-                    <MultiSelectTrigger className='w-full sm:w-40'>
-                      <MultiSelectValue placeholder='Role' />
-                    </MultiSelectTrigger>
-                    <MultiSelectContent>
-                      <MultiSelectGroup>
-                        {ROLE_OPTIONS.map(option => (
-                          <MultiSelectItem
-                            key={option.value}
-                            value={option.value}
-                          >
-                            {option.label}
-                          </MultiSelectItem>
-                        ))}
-                      </MultiSelectGroup>
-                    </MultiSelectContent>
-                  </MultiSelect>
-                </FormItem>
-              )}
-            />
-            <Button type='submit'>
-              <Search className='mr-2 h-4 w-4' />
-              Search
-            </Button>
-            <Button
-              type='button'
-              onClick={() => navigate('/admin/manage-users/create-user')}
-              className='sm:ml-auto'
-            >
-              <Plus className='mr-2 h-4 w-4' />
-              Create User
-            </Button>
-          </div>
-        </form>
-      </Form>
-
       <div className='rounded-md border'>
         <Table>
           <TableHeader>

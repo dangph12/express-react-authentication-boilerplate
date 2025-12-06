@@ -6,8 +6,8 @@ import { QUERY_KEYS } from '~/lib/query-keys';
 const fetchUsers = async params => {
   const searchParams = new URLSearchParams();
 
-  if (params.page) searchParams.set('page', params.page);
-  if (params.limit) searchParams.set('limit', params.limit);
+  if (params.page) searchParams.set('page', params.page.toString());
+  if (params.limit) searchParams.set('limit', params.limit.toString());
   if (params.sort) searchParams.set('sort', params.sort);
   if (params.name) searchParams.set('name', `/${params.name}/i`);
   if (params.gender?.length) {
@@ -22,10 +22,8 @@ const fetchUsers = async params => {
 };
 
 export const useUsers = (params = {}) => {
-  const { _submitCount, ...queryParams } = params;
-
   return useQuery({
     queryKey: [...QUERY_KEYS.USERS, params],
-    queryFn: () => fetchUsers(queryParams)
+    queryFn: () => fetchUsers(params)
   });
 };
