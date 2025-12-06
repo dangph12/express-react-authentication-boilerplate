@@ -77,7 +77,7 @@ const Header = () => {
               <PopoverTrigger asChild>
                 <Button
                   variant='ghost'
-                  className='relative h-10 w-10 rounded-full p-0 cursor-pointer'
+                  className='relative h-10 w-10 rounded-full p-0'
                 >
                   <Avatar className='h-10 w-10'>
                     <AvatarImage src={profile?.avatar} alt={profile?.name} />
@@ -127,7 +127,7 @@ const Header = () => {
           <Button
             variant='ghost'
             size='icon'
-            className='md:hidden cursor-pointer'
+            className='md:hidden'
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             {mobileMenuOpen ? (

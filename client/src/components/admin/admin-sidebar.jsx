@@ -85,7 +85,7 @@ export function AdminSidebar({ ...props }) {
                         isActive={location.pathname === item.url}
                         tooltip={item.title}
                         onClick={() => handleNavigation(item.url)}
-                        className='transition-all duration-300 ease-in-out'
+                        className='transition-all duration-300 ease-in-out cursor-pointer'
                       >
                         <Icon className='transition-all duration-300 ease-in-out' />
                         <span className='transition-all duration-300 ease-in-out group-data-[collapsible=icon]:hidden group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:w-0 overflow-hidden'>

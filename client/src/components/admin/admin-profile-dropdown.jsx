@@ -25,10 +25,7 @@ export const AdminProfileDropdown = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button
-          variant='ghost'
-          className='relative h-auto gap-3 px-2 py-1.5 cursor-pointer'
-        >
+        <Button variant='ghost' className='relative h-auto gap-3 px-2 py-1.5'>
           <Avatar className='h-8 w-8'>
             <AvatarImage src={profile?.avatar} alt={profile?.name} />
             <AvatarFallback>
