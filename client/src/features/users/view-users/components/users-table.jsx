@@ -11,6 +11,7 @@ import { DataTableColumnHeader } from '~/components/admin/data-table-column-head
 import { DataTablePagination } from '~/components/admin/data-table-pagination';
 import { Avatar, AvatarFallback, AvatarImage } from '~/components/ui/avatar';
 import { Button } from '~/components/ui/button';
+import { Checkbox } from '~/components/ui/checkbox';
 import {
   Table,
   TableBody,
@@ -19,6 +20,7 @@ import {
   TableHeader,
   TableRow
 } from '~/components/ui/table';
+import DeleteBulkUsersDialog from '~/features/users/delete-user/components/delete-bulk-users-dialog';
 import DeleteUserDialog from '~/features/users/delete-user/components/delete-user-dialog';
 import { useUsers } from '~/features/users/view-users/api/view-users';
 
@@ -27,6 +29,8 @@ const UsersTable = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false);
+  const [rowSelection, setRowSelection] = useState({});
 
   const page = parseInt(searchParams.get('page') || '1');
   const limit = parseInt(searchParams.get('limit') || '10');
@@ -81,7 +85,29 @@ const UsersTable = () => {
     setDeleteDialogOpen(true);
   };
 
+  const handleBulkDelete = () => {
+    setBulkDeleteDialogOpen(true);
+  };
+
   const columns = [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+          aria-label='Select all'
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={value => row.toggleSelected(!!value)}
+          aria-label='Select row'
+        />
+      ),
+      enableSorting: false
+    },
     {
       accessorKey: 'avatar',
       header: 'Avatar',
@@ -186,8 +212,11 @@ const UsersTable = () => {
         pageIndex: page - 1,
         pageSize: limit
       },
-      sorting
+      sorting,
+      rowSelection
     },
+    onRowSelectionChange: setRowSelection,
+    enableRowSelection: true,
     onPaginationChange: handlePaginationChange,
     onSortingChange: handleSortingChange,
     getCoreRowModel: getCoreRowModel(),
@@ -195,8 +224,24 @@ const UsersTable = () => {
     manualSorting: true
   });
 
+  const selectedRows = table.getFilteredSelectedRowModel().rows;
+  const selectedUserIds = selectedRows.map(row => row.original._id);
+
   return (
     <>
+      {selectedRows.length > 0 && (
+        <div className='flex items-center justify-between rounded-md border bg-muted/50 p-4 mb-4'>
+          <div className='text-sm text-muted-foreground'>
+            {selectedRows.length} {selectedRows.length === 1 ? 'user' : 'users'}{' '}
+            selected
+          </div>
+          <Button variant='destructive' size='sm' onClick={handleBulkDelete}>
+            <Trash2 className='mr-2 h-4 w-4' />
+            Delete Selected
+          </Button>
+        </div>
+      )}
+
       <div className='rounded-md border'>
         <Table>
           <TableHeader>
@@ -258,6 +303,17 @@ const UsersTable = () => {
         user={userToDelete}
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
+      />
+
+      <DeleteBulkUsersDialog
+        userIds={selectedUserIds}
+        open={bulkDeleteDialogOpen}
+        onOpenChange={open => {
+          setBulkDeleteDialogOpen(open);
+          if (!open) {
+            setRowSelection({});
+          }
+        }}
       />
     </>
   );

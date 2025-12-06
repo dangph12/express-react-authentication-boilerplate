@@ -19,5 +19,19 @@ export const DeleteUserService = {
     await AuthModel.deleteMany({ user: deletedUser._id });
 
     return deletedUser;
+  },
+
+  deleteBulk: async (ids: string[]) => {
+    ids.forEach(id => {
+      if (!validateObjectId(id)) {
+        throw createHttpError(400, 'Invalid user ID format');
+      }
+    });
+
+    const result = await UserModel.deleteMany({ _id: { $in: ids } });
+
+    await AuthModel.deleteMany({ user: { $in: ids } });
+
+    return result;
   }
 };

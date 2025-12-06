@@ -21,5 +21,33 @@ export const DeleteUserController = {
     res
       .status(200)
       .json(ApiResponse.success('User deleted successfully', result));
+  },
+
+  deleteBulk: async (req: Request, res: Response) => {
+    const { ids } = req.body;
+    const currentUserId = req.user?._id.toString();
+
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res
+        .status(400)
+        .json(ApiResponse.failed('Invalid user IDs provided'));
+    }
+
+    if (ids.includes(currentUserId)) {
+      return res
+        .status(400)
+        .json(ApiResponse.failed('Cannot delete your own account'));
+    }
+
+    const result = await DeleteUserService.deleteBulk(ids);
+
+    res
+      .status(200)
+      .json(
+        ApiResponse.success(
+          `${result.deletedCount} user(s) deleted successfully`,
+          result
+        )
+      );
   }
 };
