@@ -1,6 +1,6 @@
 {
     "info": {
-        "name": "F-fitness",
+        "name": "Node Boilerplate",
         "description": "",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
@@ -64,7 +64,46 @@
                             "variable": []
                         }
                     },
-                    "response": [],
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/auth/login",
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                },
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "email",
+                                            "value": "haidangphan2016@gmail.com",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "password",
+                                            "value": "123456",
+                                            "type": "text",
+                                            "disabled": false
+                                        }
+                                    ]
+                                }
+                            },
+                            "cookie": []
+                        }
+                    ],
                     "protocolProfileBehavior": {
                         "strictSSL": false,
                         "followRedirects": true
@@ -149,7 +188,70 @@
                             "variable": []
                         }
                     },
-                    "response": [],
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/auth/sign-up",
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "sign-up"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                },
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "email",
+                                            "value": "haidangphan2017@gmail.com",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "name",
+                                            "value": "Phan Hai Dang",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "avatar",
+                                            "value": "file://D:\\Dữ liệu\\Mascot Blank.428\\V_1 + V_2\\Avatar v_2.png",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "gender",
+                                            "value": "male",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "dob",
+                                            "value": "2004-05-13",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "password",
+                                            "value": "123456",
+                                            "type": "text",
+                                            "disabled": false
+                                        }
+                                    ]
+                                }
+                            },
+                            "cookie": []
+                        }
+                    ],
                     "protocolProfileBehavior": {
                         "strictSSL": false,
                         "followRedirects": true
@@ -179,7 +281,30 @@
                             "variable": []
                         }
                     },
-                    "response": [],
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/auth/logout",
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "logout"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                },
+                                "body": {}
+                            },
+                            "cookie": []
+                        }
+                    ],
                     "protocolProfileBehavior": {
                         "strictSSL": false,
                         "followRedirects": true
@@ -219,7 +344,40 @@
                             "variable": []
                         }
                     },
-                    "response": [],
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/auth/forgot-password",
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "forgot-password"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                },
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "email",
+                                            "value": "haidangphan2015@gmail.com",
+                                            "type": "text",
+                                            "disabled": false
+                                        }
+                                    ]
+                                }
+                            },
+                            "cookie": []
+                        }
+                    ],
                     "protocolProfileBehavior": {
                         "strictSSL": false,
                         "followRedirects": true
@@ -264,7 +422,30 @@
                             "variable": []
                         }
                     },
-                    "response": [],
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/auth/refresh-access-token",
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "refresh-access-token"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                },
+                                "body": {}
+                            },
+                            "cookie": []
+                        }
+                    ],
                     "protocolProfileBehavior": {
                         "strictSSL": false,
                         "followRedirects": true
@@ -275,7 +456,9 @@
                 {
                     "listen": "prerequest",
                     "script": {
-                        "exec": [],
+                        "exec": [
+                            ""
+                        ],
                         "type": "text/javascript",
                         "packages": {}
                     }
@@ -283,7 +466,9 @@
                 {
                     "listen": "test",
                     "script": {
-                        "exec": [],
+                        "exec": [
+                            ""
+                        ],
                         "type": "text/javascript",
                         "packages": {}
                     }
@@ -328,7 +513,30 @@
                             "variable": []
                         }
                     },
-                    "response": [],
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/users/me",
+                                    "path": [
+                                        "api",
+                                        "users",
+                                        "me"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                },
+                                "body": {}
+                            },
+                            "cookie": []
+                        }
+                    ],
                     "protocolProfileBehavior": {
                         "strictSSL": false,
                         "followRedirects": true
@@ -350,7 +558,7 @@
                                 }
                             ]
                         },
-                        "method": "PATCH",
+                        "method": "PUT",
                         "body": {
                             "mode": "formdata",
                             "formdata": [
@@ -400,7 +608,63 @@
                             "variable": []
                         }
                     },
-                    "response": [],
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "PUT",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/users/me",
+                                    "path": [
+                                        "api",
+                                        "users",
+                                        "me"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                },
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "email",
+                                            "type": "text",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "name",
+                                            "value": "Phan Van Giang",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "avatar",
+                                            "value": "file://D:\\Dữ liệu\\Mascot Blank.428\\V_1 + V_2\\mascot.png",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "gender",
+                                            "value": "female",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "dob",
+                                            "value": "2008-08-09",
+                                            "type": "text",
+                                            "disabled": false
+                                        }
+                                    ]
+                                }
+                            },
+                            "cookie": []
+                        }
+                    ],
                     "protocolProfileBehavior": {
                         "strictSSL": false,
                         "followRedirects": true
@@ -481,7 +745,72 @@
                             "variable": []
                         }
                     },
-                    "response": [],
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/users",
+                                    "path": [
+                                        "api",
+                                        "users"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [
+                                        {
+                                            "key": "name",
+                                            "value": "/Dang/",
+                                            "description": "",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "gender",
+                                            "value": "male",
+                                            "description": "",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "role",
+                                            "value": "user",
+                                            "description": "",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "isActive",
+                                            "value": "true",
+                                            "description": "",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "page",
+                                            "value": "1",
+                                            "description": "",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "limit",
+                                            "value": "10",
+                                            "description": "",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "sort",
+                                            "value": "-createdAt",
+                                            "description": "",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "variable": []
+                                },
+                                "body": {}
+                            },
+                            "cookie": []
+                        }
+                    ],
                     "protocolProfileBehavior": {
                         "strictSSL": false,
                         "followRedirects": true
@@ -527,7 +856,37 @@
                             ]
                         }
                     },
-                    "response": [],
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/users/:id",
+                                    "path": [
+                                        "api",
+                                        "users",
+                                        ":id"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "69258680dd506e987e64b7a9",
+                                            "description": "",
+                                            "disabled": false
+                                        }
+                                    ]
+                                },
+                                "body": {}
+                            },
+                            "cookie": []
+                        }
+                    ],
                     "protocolProfileBehavior": {
                         "strictSSL": false,
                         "followRedirects": true
@@ -599,7 +958,63 @@
                             "variable": []
                         }
                     },
-                    "response": [],
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "POST",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/users",
+                                    "path": [
+                                        "api",
+                                        "users"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": []
+                                },
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "email",
+                                            "value": "dangphhe181217@fpt.edu.vn",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "name",
+                                            "value": "Phan Dang",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "gender",
+                                            "value": "male",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "role",
+                                            "value": "user",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "dob",
+                                            "value": "2004-05-13",
+                                            "type": "text",
+                                            "disabled": false
+                                        }
+                                    ]
+                                }
+                            },
+                            "cookie": []
+                        }
+                    ],
                     "protocolProfileBehavior": {
                         "strictSSL": false,
                         "followRedirects": true
@@ -621,7 +1036,7 @@
                                 }
                             ]
                         },
-                        "method": "PATCH",
+                        "method": "PUT",
                         "body": {
                             "mode": "formdata",
                             "formdata": [
@@ -687,7 +1102,79 @@
                             ]
                         }
                     },
-                    "response": [],
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "PUT",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/users/:id",
+                                    "path": [
+                                        "api",
+                                        "users",
+                                        ":id"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "6929154db35a89a1216b545d",
+                                            "description": "",
+                                            "disabled": false
+                                        }
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "formdata",
+                                    "formdata": [
+                                        {
+                                            "key": "email",
+                                            "type": "text",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "name",
+                                            "type": "text",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "avatar",
+                                            "type": "text",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "gender",
+                                            "type": "text",
+                                            "disabled": true
+                                        },
+                                        {
+                                            "key": "role",
+                                            "value": "user",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "dob",
+                                            "value": "2008-08-09",
+                                            "type": "text",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "isActive",
+                                            "value": "true",
+                                            "type": "text",
+                                            "disabled": false
+                                        }
+                                    ]
+                                }
+                            },
+                            "cookie": []
+                        }
+                    ],
                     "protocolProfileBehavior": {
                         "strictSSL": false,
                         "followRedirects": true
@@ -733,7 +1220,37 @@
                             ]
                         }
                     },
-                    "response": [],
+                    "response": [
+                        {
+                            "name": "Success",
+                            "originalRequest": {
+                                "method": "DELETE",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{baseUrl}}/api/users/:id",
+                                    "path": [
+                                        "api",
+                                        "users",
+                                        ":id"
+                                    ],
+                                    "host": [
+                                        "{{baseUrl}}"
+                                    ],
+                                    "query": [],
+                                    "variable": [
+                                        {
+                                            "key": "id",
+                                            "value": "6926f6995c427d9aac96383f",
+                                            "description": "",
+                                            "disabled": false
+                                        }
+                                    ]
+                                },
+                                "body": {}
+                            },
+                            "cookie": []
+                        }
+                    ],
                     "protocolProfileBehavior": {
                         "strictSSL": false,
                         "followRedirects": true
@@ -744,7 +1261,9 @@
                 {
                     "listen": "prerequest",
                     "script": {
-                        "exec": [],
+                        "exec": [
+                            ""
+                        ],
                         "type": "text/javascript",
                         "packages": {}
                     }
@@ -752,7 +1271,9 @@
                 {
                     "listen": "test",
                     "script": {
-                        "exec": [],
+                        "exec": [
+                            ""
+                        ],
                         "type": "text/javascript",
                         "packages": {}
                     }
