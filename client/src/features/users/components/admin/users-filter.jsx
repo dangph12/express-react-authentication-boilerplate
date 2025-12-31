@@ -15,40 +15,24 @@ import {
 } from '~/components/ui/multi-select';
 import { GENDER_OPTIONS } from '~/constants/gender';
 import { ROLE_OPTIONS } from '~/constants/role';
+import { buildQueryParams } from '~/lib/build-query-params';
 
 const UsersFilter = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const name = searchParams.get('name') || '';
-  const gender = searchParams.getAll('gender') || [];
-  const role = searchParams.getAll('role') || [];
-
   const form = useForm({
-    defaultValues: {
-      name,
-      gender,
-      role
+    values: {
+      name: searchParams.get('name') || '',
+      gender: searchParams.getAll('gender') || [],
+      role: searchParams.getAll('role') || []
     }
   });
 
   const handleSearch = data => {
-    const newParams = new URLSearchParams();
-
-    if (data.name) newParams.set('name', data.name);
-    if (data.gender?.length) {
-      data.gender.forEach(g => newParams.append('gender', g));
-    }
-    if (data.role?.length) {
-      data.role.forEach(r => newParams.append('role', r));
-    }
-
-    newParams.set('page', '1');
-
     const sort = searchParams.get('sort');
-    if (sort) newParams.set('sort', sort);
-
-    setSearchParams(newParams);
+    const queryParams = buildQueryParams({ ...data, page: 1, sort });
+    setSearchParams(queryParams);
   };
 
   return (
