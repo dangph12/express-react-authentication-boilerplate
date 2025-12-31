@@ -1,5 +1,5 @@
-import UsersFilter from '~/features/users/view-users/components/users-filter';
-import UsersTable from '~/features/users/view-users/components/users-table';
+import UsersFilter from '~/features/users/components/admin/users-filter';
+import UsersTable from '~/features/users/components/admin/users-table';
 
 const Page = () => {
   return (
