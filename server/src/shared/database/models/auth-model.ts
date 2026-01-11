@@ -1,14 +1,8 @@
-import mongoose, { Schema, Types } from 'mongoose';
+import mongoose, { InferSchemaType, Schema } from 'mongoose';
 
-import type { Auth } from '~/entities/auth';
-
-// Omit is used to create a new type by excluding the 'user' field from Auth
-// Omit the 'user' field from Auth and replace it with ObjectId
-interface AuthDocument extends Omit<Auth, 'user'> {
-  user: Types.ObjectId;
-}
-
-const authSchema = new Schema<AuthDocument>(
+// One user can have multiple auth accounts
+// For local authentication, provider will be 'local' and providerId will be the user's email
+const authSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     provider: { type: String, required: true },
@@ -24,4 +18,6 @@ const authSchema = new Schema<AuthDocument>(
 
 authSchema.index({ provider: 1, providerId: 1 }, { unique: true });
 
-export const AuthModel = mongoose.model<AuthDocument>('Auth', authSchema);
+export type Auth = InferSchemaType<typeof authSchema>;
+
+export const AuthModel = mongoose.model<Auth>('Auth', authSchema);

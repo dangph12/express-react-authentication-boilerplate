@@ -2,8 +2,8 @@ import type { QueryOptions } from '@quarks/mongoose-query-parser';
 import generatePassword from 'generate-password';
 import createHttpError from 'http-errors';
 
-import { User } from '~/entities/user';
 import { AuthModel, UserModel } from '~/shared/database/models';
+import type { User } from '~/shared/database/models/user-model';
 import {
   buildPaginateOptions,
   deleteAvatar,
@@ -21,7 +21,7 @@ import {
 } from './user-dto';
 
 export const UserService = {
-  createUser: async (data: CreateUserRequest): Promise<User> => {
+  createUser: async (data: CreateUserRequest) => {
     const newUser = await UserModel.create(data);
     if (!newUser) {
       throw createHttpError(500, 'Failed to create user');
@@ -71,7 +71,7 @@ export const UserService = {
     return result as unknown as PaginateResponse<User>;
   },
 
-  viewProfile: async (id: string): Promise<User> => {
+  viewProfile: async (id: string) => {
     if (!validateObjectId(id)) {
       throw createHttpError(400, 'Invalid user ID format');
     }
@@ -89,7 +89,7 @@ export const UserService = {
     id: string,
     data: UpdateProfileRequest,
     avatar?: Express.Multer.File
-  ): Promise<User> => {
+  ) => {
     if (!validateObjectId(id)) {
       throw createHttpError(400, 'Invalid user ID format');
     }
@@ -120,7 +120,7 @@ export const UserService = {
     return updatedUser;
   },
 
-  viewUserDetail: async (id: string): Promise<User> => {
+  viewUserDetail: async (id: string) => {
     if (!validateObjectId(id)) {
       throw createHttpError(400, 'Invalid user ID format');
     }
@@ -134,7 +134,7 @@ export const UserService = {
     return user;
   },
 
-  updateUser: async (id: string, data: UpdateUserRequest): Promise<User> => {
+  updateUser: async (id: string, data: UpdateUserRequest) => {
     if (!validateObjectId(id)) {
       throw createHttpError(400, 'Invalid user ID format');
     }
@@ -150,7 +150,7 @@ export const UserService = {
     return updatedUser;
   },
 
-  deleteUser: async (id: string): Promise<User> => {
+  deleteUser: async (id: string) => {
     if (!validateObjectId(id)) {
       throw createHttpError(400, 'Invalid user ID format');
     }

@@ -1,11 +1,14 @@
-import mongoose, { type PaginateModel, Schema } from 'mongoose';
+import mongoose, {
+  InferSchemaType,
+  type PaginateModel,
+  Schema
+} from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-import type { User } from '~/entities/user';
 import { GENDER } from '~/shared/constants/gender';
 import { ROLE } from '~/shared/constants/role';
 
-const userSchema = new Schema<User>(
+const userSchema = new Schema(
   {
     email: { type: String, required: true, unique: true },
     name: { type: String, required: true },
@@ -27,7 +30,9 @@ const userSchema = new Schema<User>(
 
 userSchema.plugin(mongoosePaginate);
 
-export const UserModel = mongoose.model<User, PaginateModel<User>>(
+export type User = InferSchemaType<typeof userSchema>;
+
+export const UserModel = mongoose.model(
   'User',
   userSchema
-);
+) as PaginateModel<User>;

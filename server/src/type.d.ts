@@ -1,9 +1,9 @@
 import { HydratedDocument } from 'mongoose';
 
-import { User as AppUser } from '~/entities/user';
+import type { User } from '~/shared/database/models/user-model';
 
 declare global {
   namespace Express {
-    type User = HydratedDocument<AppUser>;
+    type User = HydratedDocument<User>;
   }
 }

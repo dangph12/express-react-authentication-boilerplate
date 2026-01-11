@@ -1,8 +1,8 @@
 import createHttpError from 'http-errors';
 import { HydratedDocument } from 'mongoose';
 
-import { User } from '~/entities/user';
 import { AuthModel, UserModel } from '~/shared/database/models';
+import type { User } from '~/shared/database/models/user-model';
 import {
   comparePassword,
   generateResetPasswordToken,

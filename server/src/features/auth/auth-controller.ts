@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { HydratedDocument } from 'mongoose';
 
-import { User } from '~/entities/user';
+import type { User } from '~/shared/database/models/user-model';
 import { ApiResponse } from '~/shared/utils';
 
 import { AuthService } from './auth-service';
