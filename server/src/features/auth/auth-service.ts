@@ -102,7 +102,10 @@ export const AuthService = {
     });
 
     if (existingAuth) {
-      throw createHttpError(409, 'Email already in use');
+      throw createHttpError(
+        400,
+        'Unable to create account with provided information'
+      );
     }
 
     const hashedPassword = await hashPassword(data.password);
@@ -227,7 +230,10 @@ const createNewUser = async (
   const existingUser = await UserModel.findOne({ email: data.email });
 
   if (existingUser) {
-    throw createHttpError(400, 'User with this email already exists');
+    throw createHttpError(
+      400,
+      'Unable to create account with provided information'
+    );
   }
 
   const newUser = await UserModel.create({
@@ -236,7 +242,7 @@ const createNewUser = async (
   });
 
   if (!newUser) {
-    throw createHttpError(500, 'Failed to create user');
+    throw createHttpError(500, 'Unable to complete registration at this time');
   }
 
   if (avatar) {
