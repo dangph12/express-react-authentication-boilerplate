@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import { ROLE } from '~/shared/constants/role';
 import {
   authenticate,
   authorize,
@@ -16,7 +17,7 @@ const router = Router();
 router.post(
   '/',
   authenticate(),
-  authorize(['admin']),
+  authorize([ROLE.ADMIN]),
   parseFormData,
   validate(createUserRequestSchema.shape),
   asyncHandler(UserController.createUser)
@@ -25,14 +26,14 @@ router.post(
 router.get(
   '/',
   authenticate(),
-  authorize(['admin']),
+  authorize([ROLE.ADMIN]),
   asyncHandler(UserController.viewUsers)
 );
 
 router.delete(
   '/',
   authenticate(),
-  authorize(['admin']),
+  authorize([ROLE.ADMIN]),
   asyncHandler(UserController.deleteBulk)
 );
 
@@ -48,14 +49,14 @@ router.put(
 router.get(
   '/:id',
   authenticate(),
-  authorize(['admin']),
+  authorize([ROLE.ADMIN]),
   asyncHandler(UserController.viewUserDetail)
 );
 
 router.put(
   '/:id',
   authenticate(),
-  authorize(['admin']),
+  authorize([ROLE.ADMIN]),
   parseFormData,
   validate(updateUserRequestSchema.shape),
   asyncHandler(UserController.updateUser)
@@ -64,7 +65,7 @@ router.put(
 router.delete(
   '/:id',
   authenticate(),
-  authorize(['admin']),
+  authorize([ROLE.ADMIN]),
   asyncHandler(UserController.deleteUser)
 );
 
